@@ -23,17 +23,17 @@
 inline static const char* getIrrlichtDevice()
 {
 	switch (RenderingEngine::get_raw_device()->getType()) {
-		case EIDT_WIN32: 
+		case EIDT_WIN32:
 			return "WIN32";
-		case EIDT_X11: 
+		case EIDT_X11:
 			return "X11";
-		case EIDT_OSX: 
+		case EIDT_OSX:
 			return "OSX";
-		case EIDT_SDL: 
+		case EIDT_SDL:
 			return "SDL";
-		case EIDT_ANDROID: 
+		case EIDT_ANDROID:
 			return "ANDROID";
-		default: 
+		default:
 			return "Unknown";
 	}
 }
@@ -128,7 +128,7 @@ void GameUI::update(const RunStats &stats, Client *client, MapDrawControl *draw_
 		os << std::fixed
 			<< PROJECT_NAME_C""  << g_version_hash << "[Minetest client]" << std::endl
 			<< "FPS: " << fps << "/" << fps_limit << " | Driver: "  << getVideoDriver()
-			<< std::setprecision(0) 
+			<< std::setprecision(0)
 			<< " | View range: "
 			<< (draw_control->range_all ? "All" : itos(draw_control->wanted_range))
 			<< std::setprecision(2) << std::endl
@@ -140,7 +140,7 @@ void GameUI::update(const RunStats &stats, Client *client, MapDrawControl *draw_
 			<< yawToDirectionString(cam.camera_yaw)
 			<< " | Pitch: " << (-wrapDegrees_180(cam.camera_pitch)) << "°" << std::endl
 			<< "Seed: " << ((u64)client->getMapSeed()) << std::endl
-			<< "Drawtime: " << m_drawtime_avg << "ms" 
+			<< "Drawtime: " << m_drawtime_avg << "ms"
 			<< std::setprecision(1)
 			<< " | Dtime jitter: "
 			<< (stats.dtime_jitter.max_fraction * 100.0) << "%"

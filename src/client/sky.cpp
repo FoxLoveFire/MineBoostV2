@@ -78,7 +78,7 @@ Sky::Sky(s32 id, RenderingEngine *rendering_engine, ITextureSource *tsrc, IShade
 		for (int i = 5; i < 11; i++) {
 			m_visible = false;
 			m_materials[i] = baseMaterial();
-			
+
 				m_sky_params.textures.emplace_back(SkyTextures[i - 5]);
 				video::ITexture *result = tsrc->getTextureForMesh(SkyTextures[i - 5]);
 				m_materials[i] = baseMaterial();
@@ -902,10 +902,10 @@ void Sky::addTextureToSkybox(const std::string &texture, int material_id,
 			m_materials[material_id + 5].setTexture(0, result);
 			m_materials[material_id + 5].MaterialType = video::EMT_SOLID;
 		} catch (...) {
-			errorstream << "[SKYBOX]: Failed to load texture for material ID: " 
-						<< material_id 
-						<< " with texture: " 
-						<< SkyTextures[material_id] 
+			errorstream << "[SKYBOX]: Failed to load texture for material ID: "
+						<< material_id
+						<< " with texture: "
+						<< SkyTextures[material_id]
 						<< std::endl;
 		}
 	} else {

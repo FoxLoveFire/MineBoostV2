@@ -76,7 +76,7 @@ static u8 getInteriorLight(enum LightBank bank, MapNode n, s32 increment,
 {
 	u8 light = n.getLight(bank, ndef->getLightingFlags(n));
 	light = rangelim(light + increment, 0, LIGHT_SUN);
-	if (g_settings->getBool("fullbright")) 
+	if (g_settings->getBool("fullbright"))
 		return decode_light(255);
 
 	return decode_light(light);
@@ -115,7 +115,7 @@ static u8 getFaceLight(enum LightBank bank, MapNode n, MapNode n2, const NodeDef
 	if(light_source > light)
 		light = light_source;
 
-	if (g_settings->getBool("fullbright")) 
+	if (g_settings->getBool("fullbright"))
 		return decode_light(255);
 
 	return decode_light(light);

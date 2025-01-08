@@ -271,7 +271,7 @@ void GameUI::updateChatSize()
 {
 	// Update gui element size and position
 	const v2u32 &window_size = RenderingEngine::getWindowSize();
-	s32	chat_y = g_settings->getS32("chat_y"); 
+	s32	chat_y = g_settings->getS32("chat_y");
 	if (chat_y == 0) {
 		chat_y = window_size.Y - 130 - m_guitext_chat->getTextHeight();
 	}

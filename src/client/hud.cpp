@@ -900,7 +900,7 @@ void Hud::drawSelectionMesh()
 				u32 b = (selectionbox_argb.getBlue() *
 						m_selection_mesh_color.getBlue() / 255);
 			driver->draw3DBox(selection_box, video::SColor(255, r, g, b));
-			}	
+			}
 		}
 	} else if (m_mode == HIGHLIGHT_HALO && m_selection_mesh) {
 		// Draw selection mesh

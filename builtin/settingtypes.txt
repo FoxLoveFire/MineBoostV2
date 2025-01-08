@@ -227,15 +227,15 @@ force_render_skybox (Force render skybox) bool true
 show_coords (Show coord line) bool false
 
 [**Chat]
-# Chat coordinate X 
+# Chat coordinate X
 chat_x (Chat position X) int 10
-# Chat coordinate Y 
+# Chat coordinate Y
 chat_y (Chat position Y) int 0
 
 [*Client functions]
 
 [**Main]
-# Fullbright 
+# Fullbright
 fullbright (Enable fullbright) bool false
 # Fast place
 fast_place (Enable fast place) bool false

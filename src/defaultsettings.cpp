@@ -371,12 +371,21 @@ void set_default_settings()
 	settings->setDefault("joystick_frustum_sensitivity", "170");
 	settings->setDefault("joystick_deadzone", "2048");
 
-
+	// Skybox
 	settings->setDefault("custom_skybox", "false");
 	settings->setDefault("display_sunrise", "true");
 	settings->setDefault("force_custom_skybox", "false");
 	settings->setDefault("force_render_skybox", "true");
 
+	// User Interface
+	settings->setDefault("show_coords", "false");
+	settings->setDefault("chat_x", "10");
+	settings->setDefault("chat_y", "0");
+
+	settings->setDefault("fullbright", "false");
+	settings->setDefault("fast_place", "false");
+	settings->setDefault("node_illumination", "false");
+	settings->setDefault("node_color", "(255, 0, 0)");
 	// Main menu
 	settings->setDefault("main_menu_path", "");
 	settings->setDefault("serverlist_file", "favoriteservers.json");

@@ -220,6 +220,32 @@ force_custom_skybox (Force custom skybox) bool false
 # Enable force render skybox?
 force_render_skybox (Force render skybox) bool true
 
+[*GUI Elements]
+
+[**Coords line]
+# Enable coords line?
+show_coords (Show coord line) bool false
+
+[**Chat]
+# Chat coordinate X 
+chat_x (Chat position X) int 10
+# Chat coordinate Y 
+chat_y (Chat position Y) int 0
+
+[*Client functions]
+
+[**Main]
+# Fullbright 
+fullbright (Enable fullbright) bool false
+# Fast place
+fast_place (Enable fast place) bool false
+
+[**Node illumination]
+# Enbale node illumination?
+node_illumination (Node illumination) bool false
+# Node illumination color
+node_color (Node illumination color) string (255,0,0)
+
 [Graphics and Audio]
 
 [*Graphics]

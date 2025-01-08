@@ -886,13 +886,21 @@ void Hud::drawSelectionMesh()
 	if (m_mode == HIGHLIGHT_BOX) {
 		// Draw 3D selection boxes
 		for (auto & selection_box : m_selection_boxes) {
-			u32 r = (selectionbox_argb.getRed() *
-					m_selection_mesh_color.getRed() / 255);
-			u32 g = (selectionbox_argb.getGreen() *
-					m_selection_mesh_color.getGreen() / 255);
-			u32 b = (selectionbox_argb.getBlue() *
-					m_selection_mesh_color.getBlue() / 255);
+			if(g_settings->getBool("node_illumination")){
+				v3f color = g_settings->getV3F("node_color").value_or(v3f());
+				u32 r = rangelim(myround(color.X), 0, 255);
+				u32 g = rangelim(myround(color.Y), 0, 255);
+				u32 b = rangelim(myround(color.Z), 0, 255);
+				driver->draw3DBox(selection_box, video::SColor(255, r, g, b));
+			} else {
+				u32 r = (selectionbox_argb.getRed() *
+						m_selection_mesh_color.getRed() / 255);
+				u32 g = (selectionbox_argb.getGreen() *
+						m_selection_mesh_color.getGreen() / 255);
+				u32 b = (selectionbox_argb.getBlue() *
+						m_selection_mesh_color.getBlue() / 255);
 			driver->draw3DBox(selection_box, video::SColor(255, r, g, b));
+			}	
 		}
 	} else if (m_mode == HIGHLIGHT_HALO && m_selection_mesh) {
 		// Draw selection mesh

@@ -82,6 +82,8 @@ void GameUI::init()
 			rangelim(chat_font_size, 5, 72), FM_Unspecified));
 	}
 
+	m_guitext_coords = gui::StaticText::add(guienv, L"", core::rect<s32>(0, 0, 0, 0),
+		false, true, guiroot);
 
 	// Infotext of nodes and objects.
 	// If in debug mode, object debug infos shown here, too.
@@ -117,6 +119,19 @@ void GameUI::update(const RunStats &stats, Client *client, MapDrawControl *draw_
 	v3f player_position = player->getPosition();
 
 	s32 minimal_debug_height = 0;
+
+	if (g_settings->getBool("show_coords")){
+		std::ostringstream os(std::ios_base::binary);
+		os << std::setprecision(1) << std::fixed
+			<< "(" << "X: "<< (player_position.X / BS)
+			<< ", Y: " << (player_position.Y / BS)
+			<< ", Z: " << (player_position.Z / BS) << ")";
+		setStaticText(m_guitext_coords, utf8_to_wide(os.str()).c_str());
+		m_guitext_coords->setRelativePosition(core::rect<s32>(5, screensize.Y - 5 -  g_fontengine->getTextHeight(),
+			screensize.X, screensize.Y));
+	} else {
+		m_guitext_coords -> setText(L"");
+	}
 
 	// Minimal debug text must only contain info that can't give a gameplay advantage
 	if (m_flags.show_minimal_debug) {
@@ -255,16 +270,19 @@ void GameUI::setChatText(const EnrichedString &chat_text, u32 recent_chat_count)
 void GameUI::updateChatSize()
 {
 	// Update gui element size and position
-	s32 chat_y = 5;
+	const v2u32 &window_size = RenderingEngine::getWindowSize();
+	s32	chat_y = g_settings->getS32("chat_y"); 
+	if (chat_y == 0) {
+		chat_y = window_size.Y - 130 - m_guitext_chat->getTextHeight();
+	}
+	s32	chat_x = g_settings->getS32("chat_x");
 
 	if (m_flags.show_minimal_debug)
-		chat_y += m_guitext->getTextHeight();
+		chat_y += g_fontengine->getLineHeight();
 	if (m_flags.show_basic_debug)
-		chat_y += m_guitext2->getTextHeight();
+		chat_y += g_fontengine->getLineHeight();
 
-	const v2u32 &window_size = RenderingEngine::getWindowSize();
-
-	core::rect<s32> chat_size(10, chat_y, window_size.X - 20, 0);
+	core::rect<s32> chat_size(chat_x, chat_y, window_size.X - 20, 0);
 	chat_size.LowerRightCorner.Y = std::min((s32)window_size.Y,
 			m_guitext_chat->getTextHeight() + chat_y);
 
@@ -370,5 +388,10 @@ void GameUI::clearText()
 	if (m_guitext_profiler) {
 		m_guitext_profiler->remove();
 		m_guitext_profiler = nullptr;
+	}
+
+	if (m_guitext_coords) {
+		m_guitext_coords->remove();
+		m_guitext_coords = nullptr;
 	}
 }

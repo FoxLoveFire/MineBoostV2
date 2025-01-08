@@ -206,6 +206,19 @@ virtual_joystick_triggers_aux1 (Virtual joystick triggers Aux1 button) bool fals
 #    Requires: touchscreen
 touch_punch_gesture (Punch gesture) enum short_tap short_tap,long_tap
 
+[MineBoost]
+
+[*Atmosphere]
+
+[**Sky settings]
+# Enable custom sky?
+custom_skybox (Custom skybox) bool false
+# Enable display sunrise?
+display_sunrise (Display sunrise) bool true
+# Enable force custom skybox?
+force_custom_skybox (Force custom skybox) bool false
+# Enable force render skybox?
+force_render_skybox (Force render skybox) bool true
 
 [Graphics and Audio]
 

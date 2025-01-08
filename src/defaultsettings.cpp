@@ -371,6 +371,12 @@ void set_default_settings()
 	settings->setDefault("joystick_frustum_sensitivity", "170");
 	settings->setDefault("joystick_deadzone", "2048");
 
+
+	settings->setDefault("custom_skybox", "false");
+	settings->setDefault("display_sunrise", "true");
+	settings->setDefault("force_custom_skybox", "false");
+	settings->setDefault("force_render_skybox", "true");
+
 	// Main menu
 	settings->setDefault("main_menu_path", "");
 	settings->setDefault("serverlist_file", "favoriteservers.json");

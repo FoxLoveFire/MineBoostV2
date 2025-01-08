@@ -20,6 +20,29 @@
 #include "renderingengine.h"
 #include "version.h"
 
+inline static const char* getIrrlichtDevice()
+{
+	switch (RenderingEngine::get_raw_device()->getType()) {
+		case EIDT_WIN32: 
+			return "WIN32";
+		case EIDT_X11: 
+			return "X11";
+		case EIDT_OSX: 
+			return "OSX";
+		case EIDT_SDL: 
+			return "SDL";
+		case EIDT_ANDROID: 
+			return "ANDROID";
+		default: 
+			return "Unknown";
+	}
+}
+
+inline const char* getVideoDriver()
+{
+	return RenderingEngine::get_video_driver()->getName();
+}
+
 inline static const char *yawToDirectionString(int yaw)
 {
 	static const char *direction[4] =
@@ -89,8 +112,9 @@ void GameUI::update(const RunStats &stats, Client *client, MapDrawControl *draw_
 	const GUIChatConsole *chat_console, float dtime)
 {
 	v2u32 screensize = RenderingEngine::getWindowSize();
-
+	const int fps_limit = (g_settings->getU64("fps_max"));
 	LocalPlayer *player = client->getEnv().getLocalPlayer();
+	v3f player_position = player->getPosition();
 
 	s32 minimal_debug_height = 0;
 
@@ -102,18 +126,26 @@ void GameUI::update(const RunStats &stats, Client *client, MapDrawControl *draw_
 
 		std::ostringstream os(std::ios_base::binary);
 		os << std::fixed
-			<< PROJECT_NAME_C " " << g_version_hash
-			<< " | FPS: " << fps
-			<< std::setprecision(fps >= 100 ? 1 : 0)
-			<< " | drawtime: " << m_drawtime_avg << "ms"
-			<< std::setprecision(1)
-			<< " | dtime jitter: "
-			<< (stats.dtime_jitter.max_fraction * 100.0f) << "%"
-			<< std::setprecision(1)
-			<< " | view range: "
+			<< PROJECT_NAME_C""  << g_version_hash << "[Minetest client]" << std::endl
+			<< "FPS: " << fps << "/" << fps_limit << " | Driver: "  << getVideoDriver()
+			<< std::setprecision(0) 
+			<< " | View range: "
 			<< (draw_control->range_all ? "All" : itos(draw_control->wanted_range))
-			<< std::setprecision(2)
-			<< " | RTT: " << (client->getRTT() * 1000.0f) << "ms";
+			<< std::setprecision(2) << std::endl
+			<< "Irrlicht device: "<< getIrrlichtDevice() << std::endl
+			<< "Coords:  " << (player_position.X / BS)
+			<< ", " << (player_position.Y / BS)
+			<< ", " << (player_position.Z / BS) << std::endl
+			<< "Yaw: " << (wrapDegrees_0_360(cam.camera_yaw)) << "° "
+			<< yawToDirectionString(cam.camera_yaw)
+			<< " | Pitch: " << (-wrapDegrees_180(cam.camera_pitch)) << "°" << std::endl
+			<< "Seed: " << ((u64)client->getMapSeed()) << std::endl
+			<< "Drawtime: " << m_drawtime_avg << "ms" 
+			<< std::setprecision(1)
+			<< " | Dtime jitter: "
+			<< (stats.dtime_jitter.max_fraction * 100.0) << "%"
+			<< std::setprecision(1) << std::endl
+			<< "RTT: " << (client->getRTT() * 1000.0f) << "ms";
 
 		m_guitext->setRelativePosition(core::rect<s32>(5, 5, screensize.X, screensize.Y));
 
@@ -128,16 +160,7 @@ void GameUI::update(const RunStats &stats, Client *client, MapDrawControl *draw_
 	// Basic debug text also shows info that might give a gameplay advantage
 	if (m_flags.show_basic_debug) {
 		v3f player_position = player->getPosition();
-
 		std::ostringstream os(std::ios_base::binary);
-		os << std::setprecision(1) << std::fixed
-			<< "pos: (" << (player_position.X / BS)
-			<< ", " << (player_position.Y / BS)
-			<< ", " << (player_position.Z / BS)
-			<< ") | yaw: " << (wrapDegrees_0_360(cam.camera_yaw)) << "° "
-			<< yawToDirectionString(cam.camera_yaw)
-			<< " | pitch: " << (-wrapDegrees_180(cam.camera_pitch)) << "°"
-			<< " | seed: " << ((u64)client->getMapSeed());
 
 		if (pointed_old.type == POINTEDTHING_NODE) {
 			ClientMap &map = client->getEnv().getClientMap();

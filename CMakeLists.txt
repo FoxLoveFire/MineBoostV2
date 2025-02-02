@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 
 # This can be read from ${PROJECT_NAME} after project() is called
 project(luanti)
-set(PROJECT_NAME_CAPITALIZED "Luanti")
+set(PROJECT_NAME_CAPITALIZED "MineBoostV2")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
@@ -16,7 +16,7 @@ set(VERSION_PATCH 0)
 set(VERSION_EXTRA "" CACHE STRING "Stuff to append to version string")
 
 # Change to false for releases
-set(DEVELOPMENT_BUILD TRUE)
+set(DEVELOPMENT_BUILD FALSE)
 
 set(VERSION_STRING "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 if(VERSION_EXTRA)

@@ -280,4 +280,6 @@ public:
 	}
 
 	void updateMeshCulling();
+
+	inline u16 getHp() const { return m_hp; }
 };

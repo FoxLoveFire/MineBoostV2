@@ -220,6 +220,10 @@ force_custom_skybox (Force custom skybox) bool false
 # Enable force render skybox?
 force_render_skybox (Force render skybox) bool true
 
+[**Water]
+# Disable water effect?
+small_post_effect_color (Water effect) bool false
+
 [*GUI Elements]
 
 [**Coords line]
@@ -239,6 +243,8 @@ chat_y (Chat position Y) int 0
 fullbright (Enable fullbright) bool false
 # Fast place
 fast_place (Enable fast place) bool false
+# Show HP bar
+enable_hp_bar.type (HP bar types) enum none text,image
 
 [**Node illumination]
 # Enbale node illumination?

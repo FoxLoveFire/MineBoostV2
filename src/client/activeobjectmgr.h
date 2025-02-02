@@ -24,6 +24,8 @@ public:
 	void getActiveObjects(const v3f &origin, f32 max_d,
 			std::vector<DistanceSortedActiveObject> &dest);
 
+	void getAllActiveObjects(std::unordered_map<u16, ClientActiveObject*> &dest);
+
 	/// Gets all CAOs whose selection boxes may intersect the @p shootline.
 	/// @note CAOs without a selection box are not returned.
 	/// @note Distances are along the @p shootline.

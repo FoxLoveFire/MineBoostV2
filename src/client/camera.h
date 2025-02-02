@@ -194,6 +194,8 @@ public:
 
 	inline void addArmInertia(f32 player_yaw);
 
+	void drawHealthBar();
+
 private:
 	// Use getFrustumCuller().
 	// This helper just exists to decrease the header's number of includes.

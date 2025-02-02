@@ -83,6 +83,11 @@ public:
 		return m_ao_manager.getActiveObject(id);
 	}
 
+	void getAllActiveObjects(std::unordered_map<u16, ClientActiveObject*> &dest)
+	{
+		return m_ao_manager.getAllActiveObjects(dest);
+	}
+
 	/*
 		Adds an active object to the environment.
 		Environment handles deletion of object.

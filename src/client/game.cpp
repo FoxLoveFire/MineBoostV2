@@ -60,6 +60,7 @@
 #include "clientdynamicinfo.h"
 #include <IAnimatedMeshSceneNode.h>
 #include "util/tracy_wrapper.h"
+#include "gui/SpriteManager.h"
 
 #if USE_SOUND
 	#include "client/sound/sound_openal.h"
@@ -486,6 +487,9 @@ using PausedNodesList = std::vector<std::pair<irr_ptr<scene::IAnimatedMeshSceneN
  * hides most of the stuff in this class (nothing in this class is required
  * by any other file) but exposes the public methods/data only.
  */
+
+std::vector<Sprite> sprites = {};
+
 class Game {
 public:
 	Game();
@@ -699,6 +703,7 @@ private:
 
 	std::unique_ptr<GameUI> m_game_ui;
 	irr_ptr<GUIChatConsole> gui_chat_console;
+	SpriteManager* manager = nullptr;
 	MapDrawControl *draw_control = nullptr;
 	Camera *camera = nullptr;
 	irr_ptr<Clouds> clouds;
@@ -1049,6 +1054,8 @@ void Game::shutdown()
 
 	sky.reset();
 
+	sprites.clear();
+
 	/* cleanup menus */
 	while (g_menumgr.menuCount() > 0) {
 		g_menumgr.deleteFront();
@@ -1368,6 +1375,8 @@ bool Game::initGui()
 	// Chat backend and console
 	gui_chat_console = make_irr<GUIChatConsole>(guienv, guienv->getRootGUIElement(),
 			-1, chat_backend, client, &g_menumgr);
+
+	manager = new SpriteManager(guienv, guienv->getRootGUIElement(), -1, &g_menumgr, client);
 
 	if (shouldShowTouchControls()) {
 		g_touchcontrols = new TouchControls(device, texture_src);
@@ -1869,6 +1878,8 @@ void Game::processKeyInput()
 		togglePitchMove();
 	} else if (wasKeyDown(KeyType::FASTMOVE)) {
 		toggleFast();
+	} else if (wasKeyDown(KeyType::SPRITES)) {
+		manager->create();
 	} else if (wasKeyDown(KeyType::NOCLIP)) {
 		toggleNoClip();
 #if USE_SOUND
@@ -4055,6 +4066,12 @@ void Game::drawScene(ProfilerGraph *graph, RunStats *stats)
 	/*
 		Damage flash
 	*/
+
+	for (size_t i = 0; i < sprites.size(); i++)
+	{
+		sprites[i].draw(driver);
+	}
+
 	if (this->runData.damage_flash > 0.0f) {
 		video::SColor color(this->runData.damage_flash, 180, 0, 0);
 		this->driver->draw2DRectangle(color,

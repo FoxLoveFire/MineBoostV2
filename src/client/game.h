@@ -5,12 +5,15 @@
 #pragma once
 
 #include "irrlichttypes.h"
+#include "gui/Sprite.h"
 #include "config.h"
 #include <string>
 
 #if !IS_CLIENT_BUILD
 #error Do not include in server builds
 #endif
+
+extern std::vector<Sprite> sprites;
 
 class InputHandler;
 class ChatBackend;

@@ -166,6 +166,7 @@ void set_default_settings()
 	settings->setDefault("keymap_toggle_hud", "KEY_F1");
 	settings->setDefault("keymap_toggle_chat", "KEY_F2");
 	settings->setDefault("keymap_toggle_fog", "KEY_F3");
+	settings->setDefault("keymap_sprite_manager", "KEY_KEY_H");
 #ifndef NDEBUG
 	settings->setDefault("keymap_toggle_update_camera", "KEY_F4");
 #else

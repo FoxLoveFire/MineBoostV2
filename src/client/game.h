@@ -9,9 +9,6 @@
 #include "config.h"
 #include <string>
 
-#if !IS_CLIENT_BUILD
-#error Do not include in server builds
-#endif
 
 extern std::vector<Sprite> sprites;
 

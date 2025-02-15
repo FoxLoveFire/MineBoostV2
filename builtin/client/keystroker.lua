@@ -6,7 +6,6 @@ local huds_sprite = core.create_sprite({x = 0.8738, y = 0.7214, width = 132, hei
 
 local rmb_sprite = core.create_sprite({x = 0.897, y = 0.931, width = 118, height = 16})
 local lmb_sprite = core.create_sprite({x = 0.897, y = 0.9299, width = 118, height = 16})
-
 local huds = {}
 
 local keys = {"up", "left", "down", "right", "jump", "aux1", "sneak"}
@@ -86,35 +85,36 @@ minetest.after(0, check)
 
 local timer = 0
 minetest.register_globalstep(function(dtime)
+	if core.localplayer then 
+		local x_h, y_h = core.get_position({id = huds_sprite})
 
-    local x_h, y_h = core.get_position({id = huds_sprite})
+		for _, key in ipairs(keys) do
+		    minetest.localplayer:hud_change(huds[key], "position", {x = x_h + 0.052, y = y_h})
+		end
 
-    for _, key in ipairs(keys) do
-        minetest.localplayer:hud_change(huds[key], "position", {x = x_h + 0.052, y = y_h})
-    end
+		local x_r, y_r = core.get_position({id = rmb_sprite})
 
-    local x_r, y_r = core.get_position({id = rmb_sprite})
+		local x_l, y_l = core.get_position({id = lmb_sprite})
+		
+		if core.is_moved(rmb_sprite) == true then
+		    minetest.localplayer:hud_change(rmbcps, "position", {x = x_r, y = y_r})
+		    minetest.localplayer:hud_change(rmbcps, "offset", {x = 0, y = 0})
+		end
 
-    local x_l, y_l = core.get_position({id = lmb_sprite})
-    
-    if core.is_moved(rmb_sprite) == true then
-        minetest.localplayer:hud_change(rmbcps, "position", {x = x_r, y = y_r})
-        minetest.localplayer:hud_change(rmbcps, "offset", {x = 0, y = 0})
-    end
+		if core.is_moved(lmb_sprite) == true then 
+		    minetest.localplayer:hud_change(lmbcps, "position", {x = x_l, y = y_l})
+		    minetest.localplayer:hud_change(lmbcps, "offset", {x = 0, y = 0})
+		end
 
-    if core.is_moved(lmb_sprite) == true then 
-        minetest.localplayer:hud_change(lmbcps, "position", {x = x_l, y = y_l})
-        minetest.localplayer:hud_change(lmbcps, "offset", {x = 0, y = 0})
-    end
-
-  if minetest.localplayer then
-	  timer = timer + dtime;
-	  if timer >= 0.5 then
-    --   checkfps()
-	-- 	  minetest.localplayer:hud_change(framesps, "text", "FPS: " .. fps)
-	-- 	  timer = 0
+	  if minetest.localplayer then
+		  timer = timer + dtime;
+		  if timer >= 0.5 then
+		--   checkfps()
+		-- 	  minetest.localplayer:hud_change(framesps, "text", "FPS: " .. fps)
+		-- 	  timer = 0
+		  end
 	  end
-  end
+	end
 end)
 
 local rmbclicks = 0
@@ -214,5 +214,4 @@ end)
     Made by Minetest-j45 -> https://github.com/Minetest-j45
 ]]--
 
-minetest.settings:set_bool("show_keys", true)
 

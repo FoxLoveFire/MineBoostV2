@@ -6,6 +6,7 @@
 #include "l_client.h"
 #include "chatmessage.h"
 #include "client/client.h"
+#include "client/renderingengine.h"
 #include "gui/Sprite.h"
 #include "gui/SpriteManager.h"
 #include "client/clientevent.h"
@@ -143,7 +144,6 @@ int ModApiClient::l_show_formspec(lua_State *L)
 	lua_pushboolean(L, true);
 	return 1;
 }
-
 // disconnect()
 int ModApiClient::l_disconnect(lua_State *L)
 {
@@ -337,6 +337,8 @@ int ModApiClient::l_create_sprite(lua_State* L)
     int height = luaL_checkinteger(L, -1);
     lua_pop(L, 1);
 
+	float screenWidth = RenderingEngine::get_video_driver()->getScreenSize().Width;
+	float screenHeight = RenderingEngine::get_video_driver()->getScreenSize().Height;
     int x = static_cast<int>(normalized_x * screenWidth);
     int y = static_cast<int>(normalized_y * screenHeight);
 
@@ -379,7 +381,8 @@ int ModApiClient::l_get_position(lua_State* L)
     for (size_t i = 0; i < sprites.size(); i++) {
         if (sprites[i].get_id() == id) {
             auto position = sprites[i].get_position();
-
+			float screenWidth = RenderingEngine::get_video_driver()->getScreenSize().Width;
+			float screenHeight = RenderingEngine::get_video_driver()->getScreenSize().Height;
             float normalized_x = position[0] / screenWidth;
             float normalized_y = position[1] / screenHeight;
 
@@ -425,7 +428,7 @@ int ModApiClient::l_get_width_offset(lua_State* L)
 
     for (size_t i = 0; i < sprites.size(); i++) {
         if (sprites[i].get_id() == id) {
-
+			float screenWidth = RenderingEngine::get_video_driver()->getScreenSize().Width;
             float normalized_w = sprites[i].get_rect().getWidth() / screenWidth;
 
             lua_pushnumber(L, normalized_w);
@@ -447,7 +450,7 @@ int ModApiClient::l_get_height_offset(lua_State* L)
 
     for (size_t i = 0; i < sprites.size(); i++) {
         if (sprites[i].get_id() == id) {
-
+			float screenHeight = RenderingEngine::get_video_driver()->getScreenSize().Height;
             float normalized_h = sprites[i].get_rect().getHeight() / screenHeight;
 
             lua_pushnumber(L, normalized_h);

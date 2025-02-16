@@ -10,7 +10,7 @@
 #include "client/game.h"
 
 class Client;
-std::vector<Sprite> sprites;
+extern std::vector<Sprite> sprites;
 
 using namespace irr;
 using namespace video;

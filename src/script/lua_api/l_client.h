@@ -8,9 +8,7 @@
 #include "lua_api/l_base.h"
 #include "itemdef.h"
 #include "tool.h"
-
-float screenWidth = g_settings->getFloat("screen_w");
-float screenHeight = g_settings->getFloat("screen_h");
+#include "settings.h"
 
 class ModApiClient : public ModApiBase
 {

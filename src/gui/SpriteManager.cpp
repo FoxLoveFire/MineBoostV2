@@ -50,9 +50,11 @@ bool SpriteManager::OnEvent(const irr::SEvent& event)
                 }
             }
         } else if (event.MouseInput.Event == irr::EMIE_LMOUSE_LEFT_UP) {
-            isDragging = false;
-            selectedSprite->set_moved(false);
-            selectedSprite = nullptr;
+            if (selectedSprite) {
+                isDragging = false;
+                selectedSprite->set_moved(false);
+                selectedSprite = nullptr;
+            }
             return true;
         } else if (event.MouseInput.Event == irr::EMIE_MOUSE_MOVED && isDragging && selectedSprite) {
             selectedSprite->set_position(event.MouseInput.X - offsetX, event.MouseInput.Y - offsetY);

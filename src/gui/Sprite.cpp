@@ -42,8 +42,3 @@ void Sprite::draw(video::IVideoDriver* driver)
                 core::rect<s32>(X, Y, X + Width, Y + Height));
     }
 }
-
-Sprite::~Sprite() 
-{
-
-}

@@ -1,5 +1,6 @@
 #include "SpriteManager.h"
 
+std::vector<Sprite> sprites = {};
 SpriteManager::SpriteManager(gui::IGUIEnvironment* env, 
     gui::IGUIElement* parent, 
     s32 id, IMenuManager* menumgr, 
@@ -10,6 +11,7 @@ SpriteManager::SpriteManager(gui::IGUIEnvironment* env,
     m_client(client),
     env(env)
 {
+    driver = env->getVideoDriver();
 }
 
 void SpriteManager::create()
@@ -65,6 +67,14 @@ void SpriteManager::close()
     Environment->removeFocus(this);
     m_menumgr->deletingMenu(this);
     IGUIElement::setVisible(false);
+}
+
+void SpriteManager::draw()
+{
+	for (size_t i = 0; i < sprites.size(); i++)
+	{
+		sprites[i].draw(driver);
+	}
 }
 
 SpriteManager::~SpriteManager()

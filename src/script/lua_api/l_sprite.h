@@ -4,7 +4,7 @@
 #include "lua_api/l_base.h"
 #include "lua_api/l_internal.h"
 #include "gui/Sprite.h"
-#include "client/game.h"
+#include "gui/SpriteManager.h"
 
 class l_sprite: public ModApiBase
 {

@@ -10,6 +10,9 @@
 #include "IVideoDriver.h"
 #include "client/game.h"
 
+
+extern std::vector<Sprite> sprites;
+
 using namespace irr;
 using namespace video;
 using namespace gui;
@@ -27,11 +30,14 @@ public:
 
     virtual bool OnEvent(const irr::SEvent& event);
 
+    virtual void draw();
+
     bool isDragging = false;
     
 private:
     IMenuManager* m_menumgr; 
     Client* m_client;
+    IVideoDriver *driver = nullptr;
     gui::IGUIEnvironment* env;
     Sprite* selectedSprite = nullptr;
     int offsetX = 0;

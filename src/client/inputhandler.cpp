@@ -69,6 +69,7 @@ void KeyCache::populate()
 	key[KeyType::QUICKTUNE_INC] = getKeySetting("keymap_quicktune_inc");
 	key[KeyType::QUICKTUNE_DEC] = getKeySetting("keymap_quicktune_dec");
 	key[KeyType::SPRITES] = getKeySetting("keymap_sprite_manager");
+	key[KeyType::MENU] = getKeySetting("keymap_menu");
 
 	for (int i = 0; i < HUD_HOTBAR_ITEMCOUNT_MAX; i++) {
 		std::string slot_key_name = "keymap_slot" + std::to_string(i + 1);

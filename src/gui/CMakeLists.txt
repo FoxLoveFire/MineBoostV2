@@ -29,5 +29,6 @@ set(gui_SRCS
 	${CMAKE_CURRENT_SOURCE_DIR}/touchscreeneditor.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/Sprite.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/SpriteManager.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/Menu.cpp
 	PARENT_SCOPE
 )

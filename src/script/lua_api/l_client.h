@@ -9,6 +9,9 @@
 #include "itemdef.h"
 #include "tool.h"
 
+float screenWidth = g_settings->getFloat("screen_w");
+float screenHeight = g_settings->getFloat("screen_h");
+
 class ModApiClient : public ModApiBase
 {
 private:
@@ -71,6 +74,26 @@ private:
 
 	// get_csm_restrictions()
 	static int l_get_csm_restrictions(lua_State *L);
+
+    static int l_create_sprite(lua_State* L);
+
+    static int l_get_id(lua_State* L);
+
+    static int l_set_visible(lua_State* L);
+    
+    static int l_set_position(lua_State* L);
+
+    static int l_get_position(lua_State* L);
+
+    static int l_get_rectangle(lua_State* L);
+
+    static int l_get_width_offset(lua_State* L);
+
+    static int l_get_height_offset(lua_State* L);
+
+    static int l_get_real_position(lua_State* L);
+
+    static int l_is_moved(lua_State* L);
 
 public:
 	static void Initialize(lua_State *L, int top);

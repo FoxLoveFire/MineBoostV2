@@ -5,13 +5,12 @@
 #include "IGUIEnvironment.h"
 #include "gui/modalMenu.h"
 #include <vector>
-#include "client/client.h"
 #include "irrlichttypes_extrabloated.h"
 #include "IVideoDriver.h"
 #include "client/game.h"
 
-
-extern std::vector<Sprite> sprites;
+class Client;
+std::vector<Sprite> sprites;
 
 using namespace irr;
 using namespace video;

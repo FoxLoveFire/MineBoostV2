@@ -11,8 +11,6 @@ class Sprite
 {
 public:
     Sprite(int X, int Y, int Width, int Height);
-    ~Sprite();
-
     inline unsigned int get_id() { return id; }
     
     void draw(video::IVideoDriver* driver);

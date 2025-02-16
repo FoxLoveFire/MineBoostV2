@@ -1,4 +1,5 @@
 #include "SpriteManager.h"
+#include "client/client.h"
 
 std::vector<Sprite> sprites = {};
 SpriteManager::SpriteManager(gui::IGUIEnvironment* env, 

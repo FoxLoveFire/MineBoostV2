@@ -45,7 +45,7 @@ private:
 class Menu: public IGUIElement
 {
 public:
-    Menu(gui::IGUIEnvironment* env, gui::IGUIElement* parent, s32 id, 
+    Menu(gui::IGUIEnvironment* env, gui::IGUIElement* parent, s32 id,
     IMenuManager* menumgr, Client *client);
     ~Menu();
 
@@ -59,7 +59,7 @@ public:
     virtual void draw();
 
 private:
-    IMenuManager* m_menumgr; 
+    IMenuManager* m_menumgr;
     Client* m_client;
     gui::IGUIEnvironment* env;
 

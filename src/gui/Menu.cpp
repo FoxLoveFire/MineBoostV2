@@ -22,7 +22,7 @@ void Button::setFontColor(video::SColor font_color)
 void Button::draw(video::IVideoDriver *driver)
 {
     gui::IGUIFont* font = g_fontengine->getFont(FONT_SIZE_UNSPECIFIED, FM_Standard);
-    
+
     if (IsVisible() && font) {
         driver->draw2DRectangle(color, position);
 
@@ -50,7 +50,7 @@ bool Button::isPressed(const irr::SEvent &event)
         setColor(video::SColor(115, 0, 255, 0));
         return true;
     }
-    
+
     return false;
 }
 
@@ -67,12 +67,12 @@ void drawBackground(video::IVideoDriver* driver, s32 screenW, s32 screenH) {
     driver->draw2DLine(core::vector2d<s32>(lineX, lineYStart), core::vector2d<s32>(lineX, lineYEnd), video::SColor(255, 121, 121, 121));
 }
 
-Menu::Menu(gui::IGUIEnvironment* env, 
-    gui::IGUIElement* parent, 
-    s32 id, IMenuManager* menumgr, 
+Menu::Menu(gui::IGUIEnvironment* env,
+    gui::IGUIElement* parent,
+    s32 id, IMenuManager* menumgr,
     Client* client)
-    : IGUIElement(gui::EGUIET_ELEMENT, env, parent, id, 
-    core::rect<s32>(0, 0, 0, 0)), 
+    : IGUIElement(gui::EGUIET_ELEMENT, env, parent, id,
+    core::rect<s32>(0, 0, 0, 0)),
     m_menumgr(menumgr),
     m_client(client),
     env(env), driver(env->getVideoDriver())
@@ -105,8 +105,8 @@ void Menu::initCategoryButtons(gui::IGUIElement* parent)
 
 void Menu::create()
 {
-    core::rect<s32> screenRect(0, 0, 
-        env->getVideoDriver()->getScreenSize().Width, 
+    core::rect<s32> screenRect(0, 0,
+        env->getVideoDriver()->getScreenSize().Width,
         env->getVideoDriver()->getScreenSize().Height);
     setRelativePosition(screenRect);
     IGUIElement::setVisible(true);
@@ -138,18 +138,18 @@ bool Menu::OnEvent(const irr::SEvent& event)
     if (event.EventType == irr::EET_KEY_INPUT_EVENT) {
         if (event.KeyInput.Key == KEY_ESCAPE && event.KeyInput.PressedDown) {
             close();
-            return true; 
+            return true;
         }
     }
 
-    return Parent ? Parent->OnEvent(event) : false; 
+    return Parent ? Parent->OnEvent(event) : false;
 }
 
 void Menu::draw()
 {
     if (isOpen) {
         drawBackground(driver, screenW, screenH);
-        
+
         for (size_t i = 0; i < buttons.size(); i++) {
             buttons[i].draw(driver);
         }

@@ -12,7 +12,7 @@ class Sprite
 public:
     Sprite(int X, int Y, int Width, int Height);
     inline unsigned int get_id() { return id; }
-    
+
     void draw(video::IVideoDriver* driver);
 
     bool IsVisible() { return visible;};

@@ -35,10 +35,10 @@ std::vector<s32> Sprite::get_position()
     return std::vector<s32>{this->X, this->Y};
 }
 
-void Sprite::draw(video::IVideoDriver* driver) 
+void Sprite::draw(video::IVideoDriver* driver)
 {
     if (IsVisible()) {
-        driver->draw2DRectangle(video::SColor(125, 0, 255, 0), 
+        driver->draw2DRectangle(video::SColor(125, 0, 255, 0),
                 core::rect<s32>(X, Y, X + Width, Y + Height));
     }
 }

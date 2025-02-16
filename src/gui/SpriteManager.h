@@ -19,7 +19,7 @@ using namespace gui;
 class SpriteManager: public IGUIElement
 {
 public:
-    SpriteManager(gui::IGUIEnvironment* env, gui::IGUIElement* parent, s32 id, 
+    SpriteManager(gui::IGUIEnvironment* env, gui::IGUIElement* parent, s32 id,
     IMenuManager* menumgr, Client *client);
     ~SpriteManager();
 
@@ -32,9 +32,9 @@ public:
     virtual void draw();
 
     bool isDragging = false;
-    
+
 private:
-    IMenuManager* m_menumgr; 
+    IMenuManager* m_menumgr;
     Client* m_client;
     IVideoDriver *driver = nullptr;
     gui::IGUIEnvironment* env;

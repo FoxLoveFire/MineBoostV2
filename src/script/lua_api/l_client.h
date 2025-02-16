@@ -78,7 +78,7 @@ private:
     static int l_get_id(lua_State* L);
 
     static int l_set_visible(lua_State* L);
-    
+
     static int l_set_position(lua_State* L);
 
     static int l_get_position(lua_State* L);

@@ -317,13 +317,13 @@ int ModApiClient::l_get_csm_restrictions(lua_State *L)
 	}
 	return 1;
 }
-int ModApiClient::l_create_sprite(lua_State* L) 
+int ModApiClient::l_create_sprite(lua_State* L)
 {
     luaL_checktype(L, 1, LUA_TTABLE);
 
     lua_getfield(L, 1, "x");
     float normalized_x = luaL_checknumber(L, -1);
-    lua_pop(L, 1); 
+    lua_pop(L, 1);
 
     lua_getfield(L, 1, "y");
     float normalized_y = luaL_checknumber(L, -1);
@@ -469,7 +469,7 @@ int ModApiClient::l_get_rectangle(lua_State* L)
         if (sprites[i].get_id() == id) {
             lua_pushinteger(L, sprites[i].get_rect().getWidth());
             lua_pushinteger(L, sprites[i].get_rect().getHeight());
-            
+
             return 2;
         }
    }

@@ -247,11 +247,27 @@ void Sky::render()
 		}
 
 		// Draw stars before sun and moon to be behind them
+		if (g_settings->getBool("disable_stars")) {
+			m_star_params.visible = false;
+		} else {
+			m_star_params.visible = true;
+		}
+
 		if (m_star_params.visible)
 			draw_stars(driver, wicked_time_of_day);
 
 		// Draw sunrise/sunset horizon glow texture
 		// (textures/base/pack/sunrisebg.png)
+
+		if (g_settings->getBool("display_sunrise"))
+		{
+			m_sun_params.sunrise_visible = true;
+		}
+		else 
+		{
+			m_sun_params.sunrise_visible = false;
+		}
+
 		if (m_sun_params.sunrise_visible) {
 			driver->setMaterial(m_materials[2]);
 			float mid1 = 0.25;

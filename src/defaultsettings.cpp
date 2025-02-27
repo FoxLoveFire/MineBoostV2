@@ -378,9 +378,11 @@ void set_default_settings()
 	settings->setDefault("display_sunrise", "true");
 	settings->setDefault("force_custom_skybox", "false");
 	settings->setDefault("force_render_skybox", "true");
+	settings->setDefault("disable_stars", "false");
 
 	// User Interface
 	settings->setDefault("show_coords", "false");
+	settings->setDefault("show_keys", "false");
 	settings->setDefault("chat_x", "10");
 	settings->setDefault("chat_y", "0");
 

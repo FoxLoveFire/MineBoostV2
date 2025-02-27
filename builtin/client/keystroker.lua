@@ -1,5 +1,4 @@
 --settings, choose what you want
-
 local hudpos = {x = 0.925, y = 0.725}--the position coordinates are the percentage of the screen, ranging in value from 0 to 1. 0 means left/top, 1 means right/bottom.
 --i recommend you dont set any to one as part of it wont be visible, max you should set one of the values to so you can still see it is 0.925 for x and 0.725 for y
 local huds_sprite = core.create_sprite({x = 0.8738, y = 0.7214, width = 132, height = 150})
@@ -42,15 +41,14 @@ local image_normal_54 = {up = "w_key.png", left = "a_key.png", down = "s_key.png
 local image_normal_pre54 = {up = "w_key.png", left = "a_key.png", down = "s_key.png", right = "d_key.png", jump = "space_key.png", RMB = "rmb_key.png", LMB = "lmb_key.png", aux1 = "e_key.png", sneak = "shift_key.png"}
 
 local before = {}
-
 local version = ""
 local function getversion()
-  local player = minetest.localplayer
-  if player:get_control().place == nil then
-    version = "pre5.4"
-  else
-    version = "5.4"
-  end
+    local player = minetest.localplayer
+    if player:get_control().place == nil then
+        version = "pre5.4"
+    else
+        version = "5.4"
+    end
 end
 
 local function check()
@@ -72,12 +70,20 @@ local function check()
         image_press = image_press_54
         image_normal = image_normal_54
     end
-    rmbcps = minetest.localplayer:hud_add({hud_elem_type = "text", position = hudpos, offset = {x = -33, y = 159}, text = "RMB CPS: 0", alignment = {x = 1, y = 1}, scale = {x = 1, y = 1}, number = 0xFFFFFF})
-    lmbcps = minetest.localplayer:hud_add({hud_elem_type = "text", position = hudpos, offset = {x = -33, y = 145}, text = "LMB CPS: 0", alignment = {x = 1, y = 1}, scale = {x = 1, y = 1}, number = 0xFFFFFF})
-    --checkfps()
-    ---framesps = minetest.localplayer:hud_add({hud_elem_type = "text", position = hudpos, offset = {x = -33, y = 131}, text = "FPS: " .. fps, alignment = {x = 1, y = 1}, scale = {x = 3, y = 3}, number = 0xFFFFFF})
+
+    -- Добавляем HUD только если он еще не добавлен
+    if not rmbcps then
+        rmbcps = minetest.localplayer:hud_add({hud_elem_type = "text", position = hudpos, offset = {x = -33, y = 159}, text = "RMB CPS: 0", alignment = {x = 1, y = 1}, scale = {x = 1, y = 1}, number = 0xFFFFFF})
+    end
+    if not lmbcps then
+        lmbcps = minetest.localplayer:hud_add({hud_elem_type = "text", position = hudpos, offset = {x = -33, y = 145}, text = "LMB CPS: 0", alignment = {x = 1, y = 1}, scale = {x = 1, y = 1}, number = 0xFFFFFF})
+    end
+
+    huds = {}
     for _, key in ipairs(keys) do
-        huds[key] = minetest.localplayer:hud_add(huddefs[key])
+        if not huds[key] then  -- Проверка на существование HUD
+            huds[key] = minetest.localplayer:hud_add(huddefs[key])
+        end
     end
 end
 
@@ -85,36 +91,35 @@ minetest.after(0, check)
 
 local timer = 0
 minetest.register_globalstep(function(dtime)
-	if core.localplayer then 
-		local x_h, y_h = core.get_position({id = huds_sprite})
+    if not minetest.settings:get_bool("show_keys") then return end
+    if not minetest.localplayer then return end
+    local x_h, y_h = core.get_position({id = huds_sprite})
 
-		for _, key in ipairs(keys) do
-		    minetest.localplayer:hud_change(huds[key], "position", {x = x_h + 0.052, y = y_h})
-		end
+    for _, key in ipairs(keys) do
+        if huds[key] then
+            minetest.localplayer:hud_change(huds[key], "position", {x = x_h + 0.052, y = y_h})
+        end
+    end
 
-		local x_r, y_r = core.get_position({id = rmb_sprite})
+    local x_r, y_r = core.get_position({id = rmb_sprite})
+    local x_l, y_l = core.get_position({id = lmb_sprite})
 
-		local x_l, y_l = core.get_position({id = lmb_sprite})
-		
-		if core.is_moved(rmb_sprite) == true then
-		    minetest.localplayer:hud_change(rmbcps, "position", {x = x_r, y = y_r})
-		    minetest.localplayer:hud_change(rmbcps, "offset", {x = 0, y = 0})
-		end
+    if core.is_moved(rmb_sprite) then
+        minetest.localplayer:hud_change(rmbcps, "position", {x = x_r, y = y_r})
+        minetest.localplayer:hud_change(rmbcps, "offset", {x = 0, y = 0})
+    end
 
-		if core.is_moved(lmb_sprite) == true then 
-		    minetest.localplayer:hud_change(lmbcps, "position", {x = x_l, y = y_l})
-		    minetest.localplayer:hud_change(lmbcps, "offset", {x = 0, y = 0})
-		end
+    if core.is_moved(lmb_sprite) then 
+        minetest.localplayer:hud_change(lmbcps, "position", {x = x_l, y = y_l})
+        minetest.localplayer:hud_change(lmbcps, "offset", {x = 0, y = 0})
+    end
 
-	  if minetest.localplayer then
-		  timer = timer + dtime;
-		  if timer >= 0.5 then
-		--   checkfps()
-		-- 	  minetest.localplayer:hud_change(framesps, "text", "FPS: " .. fps)
-		-- 	  timer = 0
-		  end
-	  end
-	end
+    timer = timer + dtime
+    if timer >= 0.5 then
+        -- checkfps()
+        -- minetest.localplayer:hud_change(framesps, "text", "FPS: " .. fps)
+        -- timer = 0
+    end
 end)
 
 local rmbclicks = 0
@@ -122,14 +127,12 @@ local rmbpress = false
 local rmbtimer = 0
 
 minetest.register_globalstep(function(dtime)
-
-    --print(core.get_position({id = lmb_sprite}))
+    if not minetest.settings:get_bool("show_keys") then return end
     if not minetest.localplayer then return end
     local ctl = minetest.localplayer:get_control()
     if version == "pre5.4" then
         if ctl.RMB and not rmbpress then
             rmbclicks = rmbclicks + 1
-
         end
         rmbpress = ctl.RMB
     else
@@ -139,7 +142,9 @@ minetest.register_globalstep(function(dtime)
         rmbpress = ctl.place
     end
 
-    minetest.localplayer:hud_change(rmbcps, "text", "RMB CPS: " .. rmbclicks)
+    if rmbcps then  -- Проверка на существование HUD
+        minetest.localplayer:hud_change(rmbcps, "text", "RMB CPS: " .. rmbclicks)
+    end
 
     rmbtimer = rmbtimer + dtime
     if rmbtimer >= 1 then
@@ -153,6 +158,7 @@ local lmbpress = false
 local lmbtimer = 0
 
 minetest.register_globalstep(function(dtime)
+    if not minetest.settings:get_bool("show_keys") then return end
     if not minetest.localplayer then return end
     local ctl = minetest.localplayer:get_control()
     if version == "pre5.4" then
@@ -162,12 +168,14 @@ minetest.register_globalstep(function(dtime)
         lmbpress = ctl.LMB
     else
         if ctl.dig and not lmbpress then
-           lmbclicks = lmbclicks + 1
+            lmbclicks = lmbclicks + 1
         end
         lmbpress = ctl.dig
     end
 
-    minetest.localplayer:hud_change(lmbcps, "text", "LMB CPS: " .. lmbclicks)
+    if lmbcps then
+        minetest.localplayer:hud_change(lmbcps, "text", "LMB CPS: " .. lmbclicks)
+    end
 
     lmbtimer = lmbtimer + dtime
     if lmbtimer >= 1 then
@@ -177,37 +185,40 @@ minetest.register_globalstep(function(dtime)
 end)
 
 minetest.register_globalstep(function()
-
-  if minetest.localplayer then
-      if minetest.settings:get_bool("show_keys") == true then
-          local player = minetest.localplayer
-          local controls = player:get_control()
-          if next(huds) == nil then  
-              for _, key in ipairs(keys) do
-                  huds[key] = minetest.localplayer:hud_add(huddefs[key])
-              end
-          end
-          for _, key in ipairs(keys) do
-              if controls[key] and not before[key] then
-                  minetest.localplayer:hud_change(huds[key], "text", image_press[key])
-                  before[key] = true
-              elseif not controls[key] and before[key] then
-                  minetest.localplayer:hud_change(huds[key], "text", image_normal[key])
-                  before[key] = false
-              end
-          end
-      else 
-          for _, hud_id in pairs(huds) do
-              minetest.localplayer:hud_remove(hud_id)
-          end
-          minetest.localplayer:hud_change(rmbcps, "text", "")
-          minetest.localplayer:hud_change(lmbcps, "text", "")
-          minetest.localplayer:hud_change(framesps, "text", "")
-          huds = {}
-      end
-  end
+    if minetest.localplayer then
+        if minetest.settings:get_bool("show_keys") then
+            local player = minetest.localplayer
+            local controls = player:get_control()
+            if next(huds) == nil then  
+                for _, key in ipairs(keys) do
+                    huds[key] = player:hud_add(huddefs[key])
+                end
+            end
+            for _, key in ipairs(keys) do
+                if controls[key] and not before[key] then
+                    if huds[key] then  -- Проверка на существование HUD
+                        player:hud_change(huds[key], "text", image_press[key])
+                    end
+                    before[key] = true
+                elseif not controls[key] and before[key] then
+                    if huds[key] then  -- Проверка на существование HUD
+                        player:hud_change(huds[key], "text", image_normal[key])
+                    end
+                    before[key] = false
+                end
+            end
+        else 
+            for _, hud_id in pairs(huds) do
+                minetest.localplayer:hud_remove(hud_id)
+                huds[hud_id] = nil
+            end
+            minetest.localplayer:hud_change(rmbcps, "text", "")
+            minetest.localplayer:hud_change(lmbcps, "text", "")
+            huds = {}
+            before = {}
+        end
+    end
 end)
-
 --[[
     GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 

@@ -1,64 +1,11 @@
 #include "Menu.h"
-
-#define WIDTH_ 800
-#define HEIGHT_ 450
-
-void Button::addButton(core::rect<s32> position, std::wstring title)
-{
-    this->position = position;
-    this->title = title;
-}
-
-void Button::setColor(video::SColor color)
-{
-    this->color = color;
-}
-
-void Button::setFontColor(video::SColor font_color)
-{
-    this->font_color = font_color;
-}
-
-void Button::draw(video::IVideoDriver *driver)
-{
-    gui::IGUIFont* font = g_fontengine->getFont(FONT_SIZE_UNSPECIFIED, FM_Standard);
-
-    if (IsVisible() && font) {
-        driver->draw2DRectangle(color, position);
-
-        core::dimension2du textSize = font->getDimension(title.c_str());
-        s32 textX = position.UpperLeftCorner.X + (position.getWidth() - textSize.Width) / 2;
-        s32 textY = position.UpperLeftCorner.Y + (position.getHeight() - textSize.Height) / 2;
-
-        font->draw(title.c_str(), core::rect<s32>(textX, textY, textX + textSize.Width, textY + textSize.Height),
-         font_color);
-    }
-}
-
-bool Button::isPressed(const irr::SEvent &event)
-{
-    if (event.EventType == irr::EET_MOUSE_INPUT_EVENT) {
-        if (event.MouseInput.Event == irr::EMIE_LMOUSE_PRESSED_DOWN) {
-            if (position.isPointInside(core::vector2d<s32>(event.MouseInput.X, event.MouseInput.Y))) {
-                setColor(video::SColor(255, 0, 255, 0));
-                return true;
-            }
-        }
-    }
-
-    if (event.MouseInput.Event == irr::EMIE_LMOUSE_LEFT_UP) {
-        setColor(video::SColor(115, 0, 255, 0));
-        return true;
-    }
-
-    return false;
-}
+#include "client/texturesource.h"
 
 void drawBackground(video::IVideoDriver* driver, s32 screenW, s32 screenH) {
     s32 x = (screenW - WIDTH_) / 2;
     s32 y = (screenH - HEIGHT_) / 2;
-    driver->draw2DRectangle(video::SColor(165, 52, 2, 94), core::rect<s32>(x, y, x + WIDTH_, y + HEIGHT_));
-
+    driver->draw2DRectangle(video::SColor(165, 0, 0, 0), core::rect<s32>(x, y, x + WIDTH_, y + HEIGHT_));
+    driver->draw2DRectangleOutline(core::rect<s32>(x, y, x + WIDTH_, y + HEIGHT_), video::SColor(255, 75, 125, 250), 4);
     s32 lineOffsetX = 190;
     s32 lineX = x + lineOffsetX;
     s32 lineYStart = y;
@@ -80,7 +27,40 @@ Menu::Menu(gui::IGUIEnvironment* env,
     screenW = driver->getScreenSize().Width;
     screenH = driver->getScreenSize().Height;
 
-    initCategoryButtons(parent);
+    initCategoryButtons();
+}
+
+void Menu::ItemsInit(SettingCategory category)
+{
+    std::vector<Setting> settings = getSettings();
+    s32 x = (screenW - WIDTH_) / 2;
+    s32 y = (screenH - HEIGHT_) / 2;
+
+    int startPosX = 190 + 25;
+    int startPosY = y + 25;
+    const int itemWidth = 120;
+    const int itemHeight = 120;
+    const int spacing = 15;
+
+    items.clear();
+
+    for (size_t i = 0; i < settings.size(); ++i) {
+        if (settings[i].category == category) {
+            int posX = x + startPosX + (items.size() % 4) * (itemWidth + spacing);
+            int posY = startPosY + (items.size() / 4) * (itemHeight + spacing);
+
+            Items it(core::rect<s32>(posX, posY, posX + itemWidth, posY + itemHeight));
+            it.set_title(stringToWString(settings[i].name));
+            it.set_setting(settings[i].value);
+            items.push_back(it);
+        }
+    }
+}
+
+void Menu::onCategoryButtonClick(SettingCategory category)
+{
+    this->curent_category = category;
+    ItemsInit(category);
 }
 
 void Menu::initCategoryButtons()
@@ -88,19 +68,23 @@ void Menu::initCategoryButtons()
     s32 x = (screenW - WIDTH_) / 2;
     s32 y = (screenH - HEIGHT_) / 2;
 
-    Button button;
-    button.addButton(core::rect<s32>(x + 15, y + 15, x + 15 + 160, y + 15 + 30), L"PVP");
-    button.setColor(video::SColor(115, 0, 255, 0));
-    buttons.push_back(button);
-
-    Button button_v;
-    button_v.addButton(core::rect<s32>(x + 15, y + 15 + 45, x + 15 + 160, y + 15 + 30 + 45), L"PVE");
-    button_v.setColor(video::SColor(115, 0, 255, 0));
-    buttons.push_back(button_v);
+    Button button_gui;
+    button_gui.addButton(core::rect<s32>(x + 15, y + 15, x + 15 + 160, y + 15 + 30), L"GUI");
+    button_gui.setColor(video::SColor(105, 0, 0, 0));
+    button_gui.setOnClick([this]() { onCategoryButtonClick(SettingCategory::GUI); });
+    buttons.push_back(button_gui);
+    
+    Button button_render;
+    button_render.addButton(core::rect<s32>(x + 15, y + 15 + 45, x + 15 + 160, y + 15 + 30 + 45), 
+    L"Render");
+    button_render.setColor(video::SColor(115, 0, 0, 0));
+    button_render.setOnClick([this]() { onCategoryButtonClick(SettingCategory::RENDER); });
+    buttons.push_back(button_render);
 
     for (size_t i = 0; i < buttons.size(); i++) {
         buttons[i].setVisible(false);
     }
+    ItemsInit(SettingCategory::GUI);
 }
 
 void Menu::create()
@@ -135,6 +119,10 @@ bool Menu::OnEvent(const irr::SEvent& event)
         buttons[i].isPressed(event);
     }
 
+    for (size_t i = 0; i < items.size(); i++) {
+        (items[i].isPressed(event));
+    }
+
     if (event.EventType == irr::EET_KEY_INPUT_EVENT) {
         if (event.KeyInput.Key == KEY_ESCAPE && event.KeyInput.PressedDown) {
             close();
@@ -147,14 +135,21 @@ bool Menu::OnEvent(const irr::SEvent& event)
 
 void Menu::draw()
 {
+
     if (isOpen) {
+        
         drawBackground(driver, screenW, screenH);
 
         for (size_t i = 0; i < buttons.size(); i++) {
             buttons[i].draw(driver);
         }
+
+        for (size_t i = 0; i < items.size(); i++) {
+            items[i].draw(driver, screenW, screenH);
+        }
     }
 }
+
 Menu::~Menu()
 {
 

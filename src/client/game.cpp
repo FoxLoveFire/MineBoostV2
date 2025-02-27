@@ -61,7 +61,7 @@
 #include <IAnimatedMeshSceneNode.h>
 #include "util/tracy_wrapper.h"
 #include "gui/SpriteManager.h"
-#include "gui/Menu.h"
+#include "gui/custom_menu/Menu.h"
 
 #if USE_SOUND
 	#include "client/sound/sound_openal.h"

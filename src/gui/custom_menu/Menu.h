@@ -45,7 +45,7 @@ public:
     Menu(gui::IGUIEnvironment* env, gui::IGUIElement* parent, s32 id,
     IMenuManager* menumgr, Client *client);
     ~Menu();
-    
+
     SettingCategory curent_category;
     void create();
 
@@ -56,14 +56,14 @@ public:
     void ItemsInit(SettingCategory category);
 
     void onCategoryButtonClick(SettingCategory category);
-    
+
     virtual bool OnEvent(const irr::SEvent& event);
 
     virtual void draw();
 
     std::vector<Setting> getSettings() {
         std::vector<Setting> settings;
-    
+
         settings.push_back({"KeyStroker", "show_keys", SettingCategory::GUI});
         settings.push_back({"Show coords", "show_coords", SettingCategory::GUI});
 
@@ -72,17 +72,17 @@ public:
         settings.push_back({"Node \n illumination", "node_illumination", SettingCategory::RENDER});
         settings.push_back({"Display sunrise", "display_sunrise", SettingCategory::RENDER});
         settings.push_back({"Disable stars", "disable_stars", SettingCategory::RENDER});
-        
+
         settings.push_back({"Fast place", "fast_place", SettingCategory::MISC});
-        
+
         return settings;
     }
-    
+
     std::wstring stringToWString(const std::string& str) {
         std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
         return converter.from_bytes(str);
     }
-    
+
 private:
     IMenuManager* m_menumgr;
     Client* m_client;

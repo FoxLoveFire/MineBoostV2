@@ -73,9 +73,9 @@ void Menu::initCategoryButtons()
     button_gui.setColor(video::SColor(105, 0, 0, 0));
     button_gui.setOnClick([this]() { onCategoryButtonClick(SettingCategory::GUI); });
     buttons.push_back(button_gui);
-    
+
     Button button_render;
-    button_render.addButton(core::rect<s32>(x + 15, y + 15 + 45, x + 15 + 160, y + 15 + 30 + 45), 
+    button_render.addButton(core::rect<s32>(x + 15, y + 15 + 45, x + 15 + 160, y + 15 + 30 + 45),
     L"Render");
     button_render.setColor(video::SColor(115, 0, 0, 0));
     button_render.setOnClick([this]() { onCategoryButtonClick(SettingCategory::RENDER); });
@@ -137,7 +137,7 @@ void Menu::draw()
 {
 
     if (isOpen) {
-        
+
         drawBackground(driver, screenW, screenH);
 
         for (size_t i = 0; i < buttons.size(); i++) {

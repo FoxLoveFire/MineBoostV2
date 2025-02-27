@@ -39,6 +39,7 @@ private:
     std::wstring title;
     std::string setting_item;
     core::rect<s32> position;
+    
 };
 
 #endif

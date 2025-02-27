@@ -17,7 +17,7 @@ irr::core::rect<s32> Items::get_rect()
     return irr::core::rect<s32>(X, Y, w, h);
 }
 
-void Items::set_title(std::wstring title) 
+void Items::set_title(std::wstring title)
 {
     this->title = title;
 }
@@ -35,11 +35,11 @@ bool Items::isPressed(const irr::SEvent& event)
             }
         }
     }
-    
+
     return false;
 }
 
-std::string Items::get_title() 
+std::string Items::get_title()
 {
     std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
     return converter.to_bytes(title);

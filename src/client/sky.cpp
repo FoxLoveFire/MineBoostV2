@@ -263,7 +263,7 @@ void Sky::render()
 		{
 			m_sun_params.sunrise_visible = true;
 		}
-		else 
+		else
 		{
 			m_sun_params.sunrise_visible = false;
 		}

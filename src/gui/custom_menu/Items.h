@@ -17,11 +17,11 @@ public:
     ~Items();
 
     void set_color(irr::video::SColor color);
-    
+
     irr::core::rect<s32> get_rect();
 
     void set_title(std::wstring title);
-    
+
     void set_setting(std::string setting) { this->setting_item = setting;}
 
     std::string get_title();
@@ -39,7 +39,7 @@ private:
     std::wstring title;
     std::string setting_item;
     core::rect<s32> position;
-    
+
 };
 
 #endif

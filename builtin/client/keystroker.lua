@@ -207,7 +207,7 @@ minetest.register_globalstep(function()
                     before[key] = false
                 end
             end
-        else 
+        else
             for _, hud_id in pairs(huds) do
                 minetest.localplayer:hud_remove(hud_id)
                 huds[hud_id] = nil

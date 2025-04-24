@@ -26,19 +26,6 @@ using namespace gui;
 #include <locale>
 #include <codecvt>
 
-enum SettingCategory {
-    GUI,
-    PVP,
-    RENDER,
-    MISC
-};
-
-struct Setting {
-    std::string name;
-    std::string value;
-    SettingCategory category;
-};
-
 class Menu: public IGUIElement
 {
 public:
@@ -73,8 +60,8 @@ public:
         settings.push_back({"Display sunrise", "display_sunrise", SettingCategory::RENDER});
         settings.push_back({"Disable stars", "disable_stars", SettingCategory::RENDER});
 
-        settings.push_back({"Fast place", "fast_place", SettingCategory::MISC});
-
+        settings.push_back({"Fast place", "fast_place", SettingCategory::RENDER, {Types::Boolean, 43, 124, "data"}});
+        settings.push_back({"Players HP", "enable_hp_bar", SettingCategory::RENDER});
         return settings;
     }
 
@@ -94,6 +81,8 @@ private:
     s32 screenW, screenH;
     std::vector<Button> buttons;
     std::vector<Items> items;
+
+    gui::IGUIElement* parent;
 };
 
 #endif

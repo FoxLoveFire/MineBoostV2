@@ -164,6 +164,8 @@ void GameUI::update(const RunStats &stats, Client *client, MapDrawControl *draw_
 
 		m_guitext->setRelativePosition(core::rect<s32>(5, 5, screensize.X, screensize.Y));
 
+		m_guitext->setOverrideColor(video::SColor(255, 0, 255, 0));
+		m_guitext2->setOverrideColor(video::SColor(255, 0, 255, 0));
 		setStaticText(m_guitext, utf8_to_wide(os.str()).c_str());
 
 		minimal_debug_height = m_guitext->getTextHeight();
@@ -184,11 +186,11 @@ void GameUI::update(const RunStats &stats, Client *client, MapDrawControl *draw_
 
 			if (n.getContent() != CONTENT_IGNORE) {
 				if (nodedef->get(n).name == "unknown") {
-					os << ", pointed: <unknown node>";
+					os << "pointed: <unknown node>";
 				} else {
-					os << ", pointed: " << nodedef->get(n).name;
+					os << "pointed: " << nodedef->get(n).name;
 				}
-				os << ", param2: " << (u64) n.getParam2();
+				os << "param2: " << (u64) n.getParam2();
 			}
 		}
 

@@ -8,7 +8,8 @@
 #include <string>
 #include <locale>
 #include <codecvt>
-
+#include "Button.h"
+#include "ItemSetting.h"
 
 class Items
 {
@@ -30,6 +31,8 @@ public:
 
     bool isPressed(const irr::SEvent& event);
 
+    void setSetting(Setting &setting);
+
 private:
     int X, Y;
     int w, h;
@@ -39,7 +42,12 @@ private:
     std::wstring title;
     std::string setting_item;
     core::rect<s32> position;
+    s32 screenW, screenH;
+    void drawSetting(video::IVideoDriver* driver);
 
+    Setting setting;
+
+    bool show_setting = false;
 };
 
 #endif

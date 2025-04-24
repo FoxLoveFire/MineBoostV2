@@ -17,14 +17,18 @@
 
 
 local function prepare_credits(dest, source)
-	local string = table.concat(source, "\n") .. "\n"
+    -- Убедитесь, что source - это таблица
+    if type(source) ~= "table" then
+        source = {source}  -- Преобразуем строку в таблицу
+    end
 
-	string = core.hypertext_escape(string)
-	string = string:gsub("%[.-%]", "<gray>%1</gray>")
+    local string = table.concat(source, "\n") .. "\n"
 
-	table.insert(dest, string)
+    string = core.hypertext_escape(string)
+    string = string:gsub("%[.-%]", "<gray>%1</gray>")
+
+    table.insert(dest, string)
 end
-
 local function get_credits()
 	local f = assert(io.open(core.get_mainmenu_path() .. "/credits.json"))
 	local json = core.parse_json(f:read("*all"))
@@ -68,6 +72,10 @@ return {
 
 		local credits = get_credits()
 
+		table.insert_all(hypertext, {
+			"<heading>", fgettext_ne("MineBoostV2"), "</heading>\n"
+		})
+		prepare_credits(hypertext, {"Maintainer_ is main developer"})
 		table.insert_all(hypertext, {
 			"<heading>", fgettext_ne("Core Developers"), "</heading>\n",
 		})

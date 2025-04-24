@@ -1,5 +1,4 @@
 #include "Menu.h"
-#include "client/texturesource.h"
 
 void drawBackground(video::IVideoDriver* driver, s32 screenW, s32 screenH) {
     s32 x = (screenW - WIDTH_) / 2;
@@ -26,6 +25,7 @@ Menu::Menu(gui::IGUIEnvironment* env,
 {
     screenW = driver->getScreenSize().Width;
     screenH = driver->getScreenSize().Height;
+    this->parent = parent;
 
     initCategoryButtons();
 }
@@ -41,7 +41,6 @@ void Menu::ItemsInit(SettingCategory category)
     const int itemWidth = 120;
     const int itemHeight = 120;
     const int spacing = 15;
-
     items.clear();
 
     for (size_t i = 0; i < settings.size(); ++i) {
@@ -52,6 +51,7 @@ void Menu::ItemsInit(SettingCategory category)
             Items it(core::rect<s32>(posX, posY, posX + itemWidth, posY + itemHeight));
             it.set_title(stringToWString(settings[i].name));
             it.set_setting(settings[i].value);
+            it.setSetting(settings[i]);
             items.push_back(it);
         }
     }
@@ -120,7 +120,7 @@ bool Menu::OnEvent(const irr::SEvent& event)
     }
 
     for (size_t i = 0; i < items.size(); i++) {
-        (items[i].isPressed(event));
+        items[i].isPressed(event);
     }
 
     if (event.EventType == irr::EET_KEY_INPUT_EVENT) {

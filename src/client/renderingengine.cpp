@@ -25,7 +25,7 @@
 #include "irr_ptr.h"
 
 RenderingEngine *RenderingEngine::s_singleton = nullptr;
-const video::SColor RenderingEngine::MENU_SKY_COLOR = video::SColor(255, 140, 186, 250);
+const video::SColor RenderingEngine::MENU_SKY_COLOR = video::SColor(255, 41, 52, 69);
 
 /* Helper classes */
 

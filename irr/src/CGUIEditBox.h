@@ -137,6 +137,12 @@ public:
 	//! Returns whether the element takes input from the IME
 	bool acceptsIME() override;
 
+	void setMarkColor(video::SColor color, bool flag) override
+	{
+		MarkColor = color;
+		customMarkColor = flag;
+	}
+
 protected:
 	//! Breaks the single text line.
 	void breakText();
@@ -163,6 +169,8 @@ protected:
 	bool processMouse(const SEvent &event);
 	s32 getCursorPos(s32 x, s32 y);
 
+	video::SColor MarkColor;
+	bool customMarkColor;
 	bool OverwriteMode;
 	bool MouseMarking;
 	bool Border;

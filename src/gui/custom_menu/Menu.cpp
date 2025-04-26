@@ -27,6 +27,14 @@ Menu::Menu(gui::IGUIEnvironment* env,
     screenH = driver->getScreenSize().Height;
     this->parent = parent;
 
+    scrollbar = env->addScrollBar(true, core::rect<s32>((screenW - 300) / 2 + (-45), screenH - 90 + (-85),
+    (screenW + 300) / 2 + (-45), screenH - 70 + (-85)), nullptr, 105);
+    scrollbar->setMax(160);
+    scrollbar->setMin(75);
+    scrollbar->setPos(g_settings->getFloat("fov_custom.data"));
+    scrollbar->setVisible(false);
+    scrollbar->setBackgroundColor(video::SColor(90, 0, 0, 0), true);
+
     initCategoryButtons();
 }
 
@@ -45,6 +53,11 @@ void Menu::ItemsInit(SettingCategory category)
 
     for (size_t i = 0; i < settings.size(); ++i) {
         if (settings[i].category == category) {
+            if (settings[i].category == SettingCategory::RENDER) {
+                scrollbar->setVisible(true);
+            } else {
+                scrollbar->setVisible(false);
+            }
             int posX = x + startPosX + (items.size() % 4) * (itemWidth + spacing);
             int posY = startPosY + (items.size() / 4) * (itemHeight + spacing);
 
@@ -59,7 +72,7 @@ void Menu::ItemsInit(SettingCategory category)
 
 void Menu::onCategoryButtonClick(SettingCategory category)
 {
-    this->curent_category = category;
+    this->current_category = category;
     ItemsInit(category);
 }
 
@@ -125,6 +138,7 @@ bool Menu::OnEvent(const irr::SEvent& event)
 
     if (event.EventType == irr::EET_KEY_INPUT_EVENT) {
         if (event.KeyInput.Key == KEY_ESCAPE && event.KeyInput.PressedDown) {
+            scrollbar->setVisible(false);
             close();
             return true;
         }
@@ -147,6 +161,17 @@ void Menu::draw()
         for (size_t i = 0; i < items.size(); i++) {
             items[i].draw(driver, screenW, screenH);
         }
+
+        if (g_settings->getBool("fov_custom")) {
+            g_settings->setFloat("fov_custom.data", scrollbar->getPos());
+        }
+
+        if (current_category == SettingCategory::RENDER) {
+            std::wstring wfov = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes("FOV: " + std::to_string(int(g_settings->getFloat("fov_custom.data"))));
+            font->draw(wfov.c_str(), core::rect<s32>(((screenW - 300) / 2 + (-45)) * 1.72, screenH - 90 + (-85),
+            (screenW + 300) / 2 + (-45), screenH - 70 + (-85)), video::SColor(255, 255, 255, 255));
+        }
+
     }
 }
 

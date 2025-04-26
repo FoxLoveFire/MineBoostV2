@@ -393,6 +393,8 @@ void set_default_settings()
 	settings->setDefault("enable_hp_bar", "true");
 	settings->setDefault("enable_hp_bar.type", "text");
 	settings->setDefault("small_post_effect_color", "false");
+	settings->setDefault("fov_custom", "true");
+	settings->setDefault("fov_custom.data", "75");
 	// Main menu
 	settings->setDefault("main_menu_path", "");
 	settings->setDefault("serverlist_file", "favoriteservers.json");

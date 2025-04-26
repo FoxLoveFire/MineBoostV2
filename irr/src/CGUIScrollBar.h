@@ -20,6 +20,9 @@ public:
 			IGUIElement *parent, s32 id, core::rect<s32> rectangle,
 			bool noclip = false);
 
+
+	video::SColor background;
+	bool flag = false;
 	//! destructor
 	virtual ~CGUIScrollBar();
 
@@ -63,6 +66,8 @@ public:
 
 	//! updates the rectangle
 	void updateAbsolutePosition() override;
+
+	void setBackgroundColor(video::SColor color, bool flag) override;
 
 private:
 	void refreshControls();

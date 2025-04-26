@@ -655,3 +655,4 @@ void GUIEditBoxWithScrollBar::setCursorChar(const wchar_t cursorChar) { }
 wchar_t GUIEditBoxWithScrollBar::getCursorChar() const { return '|'; }
 void GUIEditBoxWithScrollBar::setCursorBlinkTime(irr::u32 timeMs) { }
 irr::u32 GUIEditBoxWithScrollBar::getCursorBlinkTime() const { return 500; }
+void GUIEditBoxWithScrollBar::setMarkColor(video::SColor color, bool flag) {};

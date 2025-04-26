@@ -5,7 +5,7 @@
 #pragma once
 
 #include "IGUIElement.h"
-
+#include "IVideoDriver.h"
 namespace irr
 {
 namespace gui
@@ -53,6 +53,8 @@ public:
 
 	//! sets the current position of the scrollbar
 	virtual void setPos(s32 pos) = 0;
+
+	virtual void setBackgroundColor(video::SColor color, bool flag) = 0;
 };
 
 } // end namespace gui

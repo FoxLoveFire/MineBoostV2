@@ -805,8 +805,11 @@ void CGUIEditBox::draw()
 					CurrentTextRect.UpperLeftCorner.X += mbegin;
 					CurrentTextRect.LowerRightCorner.X = CurrentTextRect.UpperLeftCorner.X + mend - mbegin;
 
-					// draw mark
-					skin->draw2DRectangle(this, skin->getColor(EGDC_HIGH_LIGHT), CurrentTextRect, &localClipRect);
+					if (customMarkColor) {
+						skin->draw2DRectangle(this, MarkColor, CurrentTextRect, &localClipRect);
+					} else {
+						skin->draw2DRectangle(this, skin->getColor(EGDC_HIGH_LIGHT), CurrentTextRect, &localClipRect);
+					}
 
 					// draw marked text
 					s = txtLine->subString(lineStartPos, lineEndPos - lineStartPos);

@@ -145,6 +145,8 @@ public:
 
 	//! Get the cursor blinktime
 	virtual irr::u32 getCursorBlinkTime() const = 0;
+
+	virtual void setMarkColor(video::SColor color, bool flag) = 0;
 };
 
 } // end namespace gui

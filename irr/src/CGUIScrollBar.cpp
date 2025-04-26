@@ -251,8 +251,11 @@ void CGUIScrollBar::draw()
 	SliderRect = AbsoluteRect;
 
 	// draws the background
-	skin->draw2DRectangle(this, skin->getColor(EGDC_SCROLLBAR), SliderRect, &AbsoluteClippingRect);
-
+	if (!flag) {
+		skin->draw2DRectangle(this, skin->getColor(EGDC_SCROLLBAR), SliderRect, &AbsoluteClippingRect);
+	} else {
+		skin->draw2DRectangle(this, background, SliderRect, &AbsoluteClippingRect);
+	}
 	if (core::isnotzero(range())) {
 		// recalculate slider rectangle
 		if (Horizontal) {
@@ -383,6 +386,12 @@ void CGUIScrollBar::setMin(s32 min)
 s32 CGUIScrollBar::getPos() const
 {
 	return Pos;
+}
+
+void CGUIScrollBar::setBackgroundColor(video::SColor color, bool flag)
+{
+	background = color;
+	this->flag = flag;
 }
 
 //! refreshes the position and text on child buttons

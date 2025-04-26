@@ -14,8 +14,10 @@
 #include "client/game.h"
 #include "client/fontengine.h"
 #include "IGUIFont.h"
+#include "IGUIScrollBar.h"
 #include "Button.h"
 #include "Items.h"
+#include "settings.h"
 
 using namespace irr;
 using namespace gui;
@@ -33,7 +35,7 @@ public:
     IMenuManager* menumgr, Client *client);
     ~Menu();
 
-    SettingCategory curent_category;
+    SettingCategory current_category;
     void create();
 
     void close();
@@ -83,6 +85,10 @@ private:
     std::vector<Items> items;
 
     gui::IGUIElement* parent;
+
+    core::rect<s32> pos;
+    IGUIScrollBar* scrollbar;
+    gui::IGUIFont* font = g_fontengine->getFont(FONT_SIZE_UNSPECIFIED, FM_Standard);
 };
 
 #endif

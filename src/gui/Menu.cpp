@@ -83,7 +83,7 @@ Menu::Menu(gui::IGUIEnvironment* env,
     initCategoryButtons(parent);
 }
 
-void Menu::initCategoryButtons()
+void Menu::initCategoryButtons(gui::IGUIElement* parent)
 {
     s32 x = (screenW - WIDTH_) / 2;
     s32 y = (screenH - HEIGHT_) / 2;
@@ -155,6 +155,7 @@ void Menu::draw()
         }
     }
 }
+
 Menu::~Menu()
 {
 

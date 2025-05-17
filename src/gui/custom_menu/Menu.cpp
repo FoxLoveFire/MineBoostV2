@@ -1,5 +1,10 @@
 #include "Menu.h"
 
+Sprite_ Menu::coords_sprite = Sprite_();
+
+core::vector2d<s32> offset_f;
+Sprite_ fov_sprite = Sprite_();
+
 void drawBackground(video::IVideoDriver* driver, s32 screenW, s32 screenH) {
     s32 x = (screenW - WIDTH_) / 2;
     s32 y = (screenH - HEIGHT_) / 2;
@@ -11,6 +16,19 @@ void drawBackground(video::IVideoDriver* driver, s32 screenW, s32 screenH) {
     s32 lineYEnd = y + HEIGHT_;
 
     driver->draw2DLine(core::vector2d<s32>(lineX, lineYStart), core::vector2d<s32>(lineX, lineYEnd), video::SColor(255, 121, 121, 121));
+}
+
+void updateScrollBarPosition(gui::IGUIScrollBar* scrollbar, int screenW, int screenH)
+{
+    if (!scrollbar)
+        return;
+    core::rect<s32> newRect(
+        (screenW - 300) / 2 + (-45),
+        screenH - 90 + (-85) - 20,
+        (screenW + 300) / 2 + (-45),
+        screenH - 70 + (-85) - 20
+    );
+    scrollbar->setRelativePosition(newRect);
 }
 
 Menu::Menu(gui::IGUIEnvironment* env,
@@ -34,6 +52,29 @@ Menu::Menu(gui::IGUIEnvironment* env,
     scrollbar->setPos(g_settings->getFloat("fov_custom.data"));
     scrollbar->setVisible(false);
     scrollbar->setBackgroundColor(video::SColor(90, 0, 0, 0), true);
+
+
+	coords_sprite.width = 140;
+	coords_sprite.height = 30;
+    if (!g_settings->exists("coords_sprite")) {
+        coords_sprite.x = 5;
+        coords_sprite.y = (Environment->getVideoDriver()->getScreenSize().Height - coords_sprite.height / 2 + g_fontengine->getTextHeight() - coords_sprite.height);
+    } else {
+        v2f data = g_settings->getV2F("coords_sprite");
+        coords_sprite.x = data[0];
+        coords_sprite.y = data[1];
+    }
+
+    fov_sprite.width = 140;
+    fov_sprite.height = 30;
+    if (!g_settings->exists("fov_coords")) {
+        fov_sprite.x = 5;
+        fov_sprite.y = (Environment->getVideoDriver()->getScreenSize().Height - coords_sprite.height / 2 + g_fontengine->getTextHeight() - coords_sprite.height);
+    } else {
+        v2f fov_data = g_settings->getV2F("fov_coords");
+        fov_sprite.x = fov_data[0];
+        fov_sprite.y = fov_data[1];
+    }
 
     initCategoryButtons();
 }
@@ -113,6 +154,9 @@ void Menu::create()
     for (size_t i = 0; i < buttons.size(); i++) {
         buttons[i].setVisible(true);
     }
+    if (this-> current_category == SettingCategory::RENDER) {
+        scrollbar->setVisible(true);
+    }
 }
 
 void Menu::close()
@@ -128,6 +172,7 @@ void Menu::close()
 
 bool Menu::OnEvent(const irr::SEvent& event)
 {
+    s32 screenWidth = Environment->getVideoDriver()->getScreenSize().Width, screenHeight = Environment->getVideoDriver()->getScreenSize().Height;
     for (size_t i = 0; i < buttons.size(); i++) {
         buttons[i].isPressed(event);
     }
@@ -138,9 +183,46 @@ bool Menu::OnEvent(const irr::SEvent& event)
 
     if (event.EventType == irr::EET_KEY_INPUT_EVENT) {
         if (event.KeyInput.Key == KEY_ESCAPE && event.KeyInput.PressedDown) {
-            scrollbar->setVisible(false);
             close();
             return true;
+        }
+    }
+
+    if (event.EventType == irr::EET_MOUSE_INPUT_EVENT) {
+        switch (event.MouseInput.Event) {
+            case irr::EMIE_LMOUSE_PRESSED_DOWN:
+                    if (coords_sprite.get_rect().isPointInside(core::vector2d<s32>(event.MouseInput.X, event.MouseInput.Y))) {
+                        coords_sprite.isDragging = true;
+                        offset = core::vector2d<s32>(event.MouseInput.X - coords_sprite.x, event.MouseInput.Y - coords_sprite.y);
+                        return true;
+                    }
+
+                    if (fov_sprite.get_rect().isPointInside(core::vector2d<s32>(event.MouseInput.X, event.MouseInput.Y))) {
+                        fov_sprite.isDragging = true;
+                        offset_f = core::vector2d<s32>(event.MouseInput.X - fov_sprite.x, event.MouseInput.Y - fov_sprite.y);
+                        return true;
+                    }
+                break;
+            case irr::EMIE_LMOUSE_LEFT_UP:
+                coords_sprite.isDragging = false;
+                fov_sprite.isDragging = false;
+                break;
+            case irr::EMIE_MOUSE_MOVED:
+                if (coords_sprite.isDragging) {
+                    coords_sprite.x = event.MouseInput.X - offset.X;
+                    coords_sprite.y = event.MouseInput.Y - offset.Y;
+                    coords_sprite.save(screenWidth, screenHeight, "coords_sprite");
+                }
+
+                if (fov_sprite.isDragging) {
+                    fov_sprite.x = event.MouseInput.X - offset_f.X;
+                    fov_sprite.y = event.MouseInput.Y - offset_f.Y;
+                    fov_sprite.save(screenWidth, screenHeight, "fov_coords");
+                }
+                break;
+
+            default:
+                break;
         }
     }
 
@@ -149,10 +231,11 @@ bool Menu::OnEvent(const irr::SEvent& event)
 
 void Menu::draw()
 {
-
+    updateScrollBarPosition(scrollbar, screenW, screenH);
     if (isOpen) {
-
         drawBackground(driver, screenW, screenH);
+        driver->draw2DRectangleOutline(core::rect<s32>(coords_sprite.x, coords_sprite.y, coords_sprite.x + coords_sprite.width, coords_sprite.y + coords_sprite.height), video::SColor(255, 255, 0, 255));
+        driver->draw2DRectangleOutline(core::rect<s32>(fov_sprite.get_rect()), video::SColor(255, 255, 0, 255));
 
         for (size_t i = 0; i < buttons.size(); i++) {
             buttons[i].draw(driver);
@@ -168,10 +251,12 @@ void Menu::draw()
 
         if (current_category == SettingCategory::RENDER) {
             std::wstring wfov = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes("FOV: " + std::to_string(int(g_settings->getFloat("fov_custom.data"))));
-            font->draw(wfov.c_str(), core::rect<s32>(((screenW - 300) / 2 + (-45)) * 1.72, screenH - 90 + (-85),
-            (screenW + 300) / 2 + (-45), screenH - 70 + (-85)), video::SColor(255, 255, 255, 255));
+            font->draw(wfov.c_str(), core::rect<s32>(((screenW - 300) / 2 + (-45)) * 1.72, screenH - 90 + (-85) - 20,
+            (screenW + 300) / 2 + (-45), screenH - 70 + (-85) - 20), video::SColor(255, 255, 255, 255));
         }
 
+    } else {
+        scrollbar->setVisible(false);
     }
 }
 

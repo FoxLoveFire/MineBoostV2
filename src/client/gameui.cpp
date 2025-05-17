@@ -84,7 +84,8 @@ void GameUI::init()
 
 	m_guitext_coords = gui::StaticText::add(guienv, L"", core::rect<s32>(0, 0, 0, 0),
 		false, true, guiroot);
-
+	m_guitext_showfps = gui::StaticText::add(guienv, L"", core::rect<s32>(0, 0, 0, 0),
+	false, true, guiroot);
 	// Infotext of nodes and objects.
 	// If in debug mode, object debug infos shown here, too.
 	// Located on the left on the screen, below chat.
@@ -126,11 +127,27 @@ void GameUI::update(const RunStats &stats, Client *client, MapDrawControl *draw_
 			<< "(" << "X: "<< (player_position.X / BS)
 			<< ", Y: " << (player_position.Y / BS)
 			<< ", Z: " << (player_position.Z / BS) << ")";
+
+		if (g_settings->exists("coords_sprite")) {
+			v2f data = g_settings->getV2F("coords_sprite");
+			m_guitext_coords->setRelativePosition(core::rect<s32>(data[0], data[1], screensize.X, screensize.Y));
+		} else {
+			m_guitext_coords->setRelativePosition(core::rect<s32>(5, screensize.Y - 5 - g_fontengine->getTextHeight(), screensize.X, screensize.Y));
+		}
 		setStaticText(m_guitext_coords, utf8_to_wide(os.str()).c_str());
-		m_guitext_coords->setRelativePosition(core::rect<s32>(5, screensize.Y - 5 -  g_fontengine->getTextHeight(),
-			screensize.X, screensize.Y));
 	} else {
 		m_guitext_coords -> setText(L"");
+	}
+
+	if (g_settings->getBool("show_fps")) {
+		if (g_settings->exists("fov_coords")) {
+			v2f fov_data = g_settings->getV2F("fov_coords");
+			m_guitext_showfps->setRelativePosition(core::rect<s32>(fov_data[0], fov_data[1], screensize.X, screensize.Y));
+		} else {
+			m_guitext_showfps->setRelativePosition(core::rect<s32>(5, screensize.Y - 25 - g_fontengine->getTextHeight(), 
+			screensize.X, screensize.Y));
+		}
+		setStaticText(m_guitext_showfps, utf8_to_wide("[FPS: "+std::to_string(int(1.0 / stats.dtime_jitter.avg))+ "]"));
 	}
 
 	// Minimal debug text must only contain info that can't give a gameplay advantage
@@ -395,5 +412,10 @@ void GameUI::clearText()
 	if (m_guitext_coords) {
 		m_guitext_coords->remove();
 		m_guitext_coords = nullptr;
+	}
+
+	if (m_guitext_showfps) {
+		m_guitext_showfps->remove();
+		m_guitext_showfps = nullptr;
 	}
 }

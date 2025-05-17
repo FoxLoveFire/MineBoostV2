@@ -21,12 +21,33 @@
 
 using namespace irr;
 using namespace gui;
-
 #include <map>
 #include <string>
 #include <vector>
 #include <locale>
 #include <codecvt>
+
+class Sprite_
+{
+public:
+    Sprite_();
+    int x = 0, y = 0;
+    int width = 0;
+    int height = 0;
+    core::rect<s32> get_rect() {return core::rect<s32>(x, y, x + width, y + height);}
+    bool isDragging = false;
+    bool changedPos = false;
+
+    void save(s32 screenWidth, s32 screenHeight, std::string name) {
+        if (x < 0) {
+            x = 0;
+        } else if (y + height > screenHeight) {
+            y = screenHeight - height;
+        }
+        g_settings->setV2F(name, v2f(x, y));
+    }
+
+};
 
 class Menu: public IGUIElement
 {
@@ -86,6 +107,8 @@ private:
 
     gui::IGUIElement* parent;
 
+    static Sprite_ coords_sprite;
+    core::vector2d<s32> offset;
     core::rect<s32> pos;
     IGUIScrollBar* scrollbar;
     gui::IGUIFont* font = g_fontengine->getFont(FONT_SIZE_UNSPECIFIED, FM_Standard);

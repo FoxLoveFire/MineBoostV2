@@ -90,6 +90,7 @@ private:
 
 	gui::IGUIStaticText *m_guitext_info = nullptr; // At the middle of the screen
 	gui::IGUIStaticText *m_guitext_coords = nullptr;
+	gui::IGUIStaticText *m_guitext_showfps = nullptr;
 	std::wstring m_infotext;
 
 	gui::IGUIStaticText *m_guitext_status = nullptr;

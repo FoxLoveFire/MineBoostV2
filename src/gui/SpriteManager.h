@@ -41,7 +41,6 @@ private:
     Sprite* selectedSprite = nullptr;
     int offsetX = 0;
     int offsetY = 0;
-
     Sprite coord_sprite = Sprite(5, 0, 140, 30);
 };
 

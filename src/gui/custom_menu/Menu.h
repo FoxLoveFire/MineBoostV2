@@ -27,10 +27,8 @@ using namespace gui;
 #include <locale>
 #include <codecvt>
 
-class Sprite_
+struct Sprite_
 {
-public:
-    Sprite_();
     int x = 0, y = 0;
     int width = 0;
     int height = 0;

@@ -5,6 +5,9 @@ Sprite_ Menu::coords_sprite = Sprite_();
 core::vector2d<s32> offset_f;
 Sprite_ fov_sprite = Sprite_();
 
+Sprite_ chat = Sprite_();
+core::vector2d<s32> offset_chp;
+
 void drawBackground(video::IVideoDriver* driver, s32 screenW, s32 screenH) {
     s32 x = (screenW - WIDTH_) / 2;
     s32 y = (screenH - HEIGHT_) / 2;
@@ -75,6 +78,11 @@ Menu::Menu(gui::IGUIEnvironment* env,
         fov_sprite.x = fov_data[0];
         fov_sprite.y = fov_data[1];
     }
+
+	chat.width = 1200;
+	chat.height = 200;
+	chat.x = g_settings->getS32("chat_x");
+	chat.y = g_settings->getS32("chat_y");
 
     initCategoryButtons();
 }
@@ -202,10 +210,17 @@ bool Menu::OnEvent(const irr::SEvent& event)
                         offset_f = core::vector2d<s32>(event.MouseInput.X - fov_sprite.x, event.MouseInput.Y - fov_sprite.y);
                         return true;
                     }
+
+					if (chat.get_rect().isPointInside(core::vector2d<s32>(event.MouseInput.X, event.MouseInput.Y))) {
+						chat.isDragging = true;
+						offset_chp = core::vector2d<s32>(event.MouseInput.X - chat.x, event.MouseInput.Y - chat.y);
+						return true;
+					}
                 break;
             case irr::EMIE_LMOUSE_LEFT_UP:
                 coords_sprite.isDragging = false;
                 fov_sprite.isDragging = false;
+				chat.isDragging = false;
                 break;
             case irr::EMIE_MOUSE_MOVED:
                 if (coords_sprite.isDragging) {
@@ -219,8 +234,13 @@ bool Menu::OnEvent(const irr::SEvent& event)
                     fov_sprite.y = event.MouseInput.Y - offset_f.Y;
                     fov_sprite.save(screenWidth, screenHeight, "fov_coords");
                 }
-                break;
 
+				if (chat.isDragging) {
+					chat.x = event.MouseInput.X - offset_chp.X;
+					chat.y = event.MouseInput.Y - offset_chp.Y;
+					chat.save(screenWidth, screenHeight, "chat_x", "chat_y");
+				}
+                break;
             default:
                 break;
         }
@@ -234,8 +254,10 @@ void Menu::draw()
     updateScrollBarPosition(scrollbar, screenW, screenH);
     if (isOpen) {
         drawBackground(driver, screenW, screenH);
-        driver->draw2DRectangleOutline(core::rect<s32>(coords_sprite.x, coords_sprite.y, coords_sprite.x + coords_sprite.width, coords_sprite.y + coords_sprite.height), video::SColor(255, 255, 0, 255));
+        driver->draw2DRectangleOutline(core::rect<s32>(coords_sprite.get_rect()), video::SColor(255, 255, 0, 255));
         driver->draw2DRectangleOutline(core::rect<s32>(fov_sprite.get_rect()), video::SColor(255, 255, 0, 255));
+		driver->draw2DRectangleOutline(core::rect<s32>(chat.get_rect()), video::SColor(255, 255, 0, 255));
+
 
         for (size_t i = 0; i < buttons.size(); i++) {
             buttons[i].draw(driver);
@@ -262,5 +284,4 @@ void Menu::draw()
 
 Menu::~Menu()
 {
-
 }

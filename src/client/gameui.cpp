@@ -293,6 +293,7 @@ void GameUI::updateChatSize()
 	s32	chat_y = g_settings->getS32("chat_y");
 	if (chat_y == 0) {
 		chat_y = window_size.Y - 130 - m_guitext_chat->getTextHeight();
+		g_settings->setS32("chat_y", window_size.Y - 130 - m_guitext_chat->getTextHeight());
 	}
 	s32	chat_x = g_settings->getS32("chat_x");
 
@@ -300,6 +301,8 @@ void GameUI::updateChatSize()
 		chat_y += g_fontengine->getLineHeight();
 	if (m_flags.show_basic_debug)
 		chat_y += g_fontengine->getLineHeight();
+
+	
 
 	core::rect<s32> chat_size(chat_x, chat_y, window_size.X - 20, 0);
 	chat_size.LowerRightCorner.Y = std::min((s32)window_size.Y,

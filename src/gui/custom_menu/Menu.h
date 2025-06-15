@@ -45,6 +45,11 @@ struct Sprite_
         g_settings->setV2F(name, v2f(x, y));
     }
 
+	void save(s32 screenWidth, s32 screenHeight, std::string name, std::string name1) {
+		g_settings->setS32(name, x);
+		g_settings->setS32(name1, y);
+	}
+
 };
 
 class Menu: public IGUIElement

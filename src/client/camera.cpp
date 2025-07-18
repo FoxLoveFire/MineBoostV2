@@ -283,99 +283,99 @@ void Camera::addArmInertia(f32 player_yaw)
 
 void Camera::drawHealthBar()
 {
-    ClientEnvironment &env = m_client->getEnv();
-    gui::IGUIFont *font = g_fontengine->getFont();
-    std::unordered_map<u16, ClientActiveObject*> allObjects;
-    env.getAllActiveObjects(allObjects);
-	f32 fovScale = 72 / m_curr_fov_degrees;
-    video::IVideoDriver *driver = RenderingEngine::get_video_driver();
-    core::matrix4 trans = m_cameranode->getProjectionMatrix() * m_cameranode->getViewMatrix();
-    v2u32 screensize = driver->getScreenSize();
+    // ClientEnvironment &env = m_client->getEnv();
+    // gui::IGUIFont *font = g_fontengine->getFont();
+    // std::unordered_map<u16, ClientActiveObject*> allObjects;
+    // env.getAllActiveObjects(allObjects);
+	// f32 fovScale = 72 / m_curr_fov_degrees;
+    // video::IVideoDriver *driver = RenderingEngine::get_video_driver();
+    // core::matrix4 trans = m_cameranode->getProjectionMatrix() * m_cameranode->getViewMatrix();
+    // v2u32 screensize = driver->getScreenSize();
 
-    for (auto &it : allObjects) {
-        ClientActiveObject *cao = it.second;
-        GenericCAO *obj = dynamic_cast<GenericCAO *>(cao);
-		if (obj->isLocalPlayer())
-			continue;
-		if (!obj->isPlayer())
-			continue;
+    // for (auto &it : allObjects) {
+    //     ClientActiveObject *cao = it.second;
+    //     GenericCAO *obj = dynamic_cast<GenericCAO *>(cao);
+	// 	if (obj->isLocalPlayer())
+	// 		continue;
+	// 	if (!obj->isPlayer())
+	// 		continue;
 
-        v3f textPos = obj->getSceneNode()->getAbsolutePosition();;
+    //     v3f textPos = obj->getSceneNode()->getAbsolutePosition();;
 
-		if (g_settings->get("enable_hp_bar.type") == "image") {
-			textPos.Y += 9.0f;
-		} else {
-			textPos.Y += 22.0f;
-		}
-        f32 transformed_pos[4] = { textPos.X, textPos.Y, textPos.Z, 1.0f };
+	// 	if (g_settings->get("enable_hp_bar.type") == "image") {
+	// 		textPos.Y += 9.0f;
+	// 	} else {
+	// 		textPos.Y += 22.0f;
+	// 	}
+    //     f32 transformed_pos[4] = { textPos.X, textPos.Y, textPos.Z, 1.0f };
 
-        trans.multiplyWith1x4Matrix(transformed_pos);
-        if (transformed_pos[3] > 0) {
-			if ( g_settings->get("enable_hp_bar.type") == "image") {
-				double health_percentage = obj->getProperties().hp_max > 0 ? static_cast<double>(obj->getHp()) / obj->getProperties().hp_max : 0.0;
-				health_percentage = std::max(0.0, std::min(1.0, health_percentage));
-				video::SColor backgroundColor(255, 5, 10, 15);
-				video::SColor borderColor(255, 0, 0, 0);
-				// Interpolate color components
-				u8 red = static_cast<u8>(255 * (1.0f - health_percentage));
-				u8 green = static_cast<u8>(255 * health_percentage);
+    //     trans.multiplyWith1x4Matrix(transformed_pos);
+    //     if (transformed_pos[3] > 0) {
+	// 		if ( g_settings->get("enable_hp_bar.type") == "image") {
+	// 			double health_percentage = obj->getProperties().hp_max > 0 ? static_cast<double>(obj->getHp()) / obj->getProperties().hp_max : 0.0;
+	// 			health_percentage = std::max(0.0, std::min(1.0, health_percentage));
+	// 			video::SColor backgroundColor(255, 5, 10, 15);
+	// 			video::SColor borderColor(255, 0, 0, 0);
+	// 			// Interpolate color components
+	// 			u8 red = static_cast<u8>(255 * (1.0f - health_percentage));
+	// 			u8 green = static_cast<u8>(255 * health_percentage);
 
-				// Create the interpolated color
-				video::SColor filledColor = video::SColor(255, red, green, 0);
+	// 			// Create the interpolated color
+	// 			video::SColor filledColor = video::SColor(255, red, green, 0);
 
-				// Perspective scaling factor (derived from zDiv)
-				f32 zDiv = transformed_pos[3] == 0.0f ? 1.0f : core::reciprocal(transformed_pos[3]);
-				f32 scale = zDiv; // Scale inversely proportional to distance
-				scale = std::min(scale, 3.0f);
-				s32 barWidth = static_cast<s32>((1000 * scale) * fovScale);
-				s32 barHeight = static_cast<s32>((15000 * scale) * fovScale);
-				s32 baseBarOffset = static_cast<s32>((6000 * scale) * fovScale);
+	// 			// Perspective scaling factor (derived from zDiv)
+	// 			f32 zDiv = transformed_pos[3] == 0.0f ? 1.0f : core::reciprocal(transformed_pos[3]);
+	// 			f32 scale = zDiv; // Scale inversely proportional to distance
+	// 			scale = std::min(scale, 3.0f);
+	// 			s32 barWidth = static_cast<s32>((1000 * scale) * fovScale);
+	// 			s32 barHeight = static_cast<s32>((15000 * scale) * fovScale);
+	// 			s32 baseBarOffset = static_cast<s32>((6000 * scale) * fovScale);
 
-				// Calculate the screen position
-				v2s32 screen_pos;
-				screen_pos.X = screensize.X *
-					(0.5 * transformed_pos[0] * zDiv + 0.5) - barWidth / 2;
-				screen_pos.Y = screensize.Y *
-					(0.5 - transformed_pos[1] * zDiv * 0.5) - barHeight / 2;
+	// 			// Calculate the screen position
+	// 			v2s32 screen_pos;
+	// 			screen_pos.X = screensize.X *
+	// 				(0.5 * transformed_pos[0] * zDiv + 0.5) - barWidth / 2;
+	// 			screen_pos.Y = screensize.Y *
+	// 				(0.5 - transformed_pos[1] * zDiv * 0.5) - barHeight / 2;
 
-				// Define the bar rectangle and calculate the filled portion
-				core::rect<s32> barRect(baseBarOffset, 0, baseBarOffset + barWidth, barHeight);
-				s32 fillHeight = static_cast<s32>(barRect.getHeight() * health_percentage);
-				core::rect<s32> filledRect(
-					barRect.UpperLeftCorner.X,
-					barRect.LowerRightCorner.Y - fillHeight, // Start from the bottom
-					barRect.LowerRightCorner.X,
-					barRect.LowerRightCorner.Y
-				);
+	// 			// Define the bar rectangle and calculate the filled portion
+	// 			core::rect<s32> barRect(baseBarOffset, 0, baseBarOffset + barWidth, barHeight);
+	// 			s32 fillHeight = static_cast<s32>(barRect.getHeight() * health_percentage);
+	// 			core::rect<s32> filledRect(
+	// 				barRect.UpperLeftCorner.X,
+	// 				barRect.LowerRightCorner.Y - fillHeight, // Start from the bottom
+	// 				barRect.LowerRightCorner.X,
+	// 				barRect.LowerRightCorner.Y
+	// 			);
 
-				// Draw the health bar
-				driver->draw2DRectangle(backgroundColor, barRect + screen_pos);
-				driver->draw2DRectangle(filledColor, filledRect + screen_pos);
-				driver->draw2DRectangleOutline(barRect + screen_pos, borderColor, barWidth * 0.2);
-				continue;
-			} else if (g_settings->get("enable_hp_bar.type") == "text") {
-				std::string hpText = "HP: " + std::to_string(obj->getHp());
-				core::dimension2d<u32> textsize = font->getDimension(utf8_to_wide(hpText).c_str());
-				f32 zDiv = transformed_pos[3] == 0.0f ? 1.0f : core::reciprocal(transformed_pos[3]);
-				v2s32 screen_pos;
-				screen_pos.X = screensize.X *
-					(0.5 * transformed_pos[0] * zDiv + 0.5) - textsize.Width / 2;
-				screen_pos.Y = screensize.Y *
-					(0.5 - transformed_pos[1] * zDiv * 0.5) - textsize.Height / 2;
+	// 			// Draw the health bar
+	// 			driver->draw2DRectangle(backgroundColor, barRect + screen_pos);
+	// 			driver->draw2DRectangle(filledColor, filledRect + screen_pos);
+	// 			driver->draw2DRectangleOutline(barRect + screen_pos, borderColor, barWidth * 0.2);
+	// 			continue;
+	// 		} else if (g_settings->get("enable_hp_bar.type") == "text") {
+	// 			std::string hpText = "HP: " + std::to_string(obj->getHp());
+	// 			core::dimension2d<u32> textsize = font->getDimension(utf8_to_wide(hpText).c_str());
+	// 			f32 zDiv = transformed_pos[3] == 0.0f ? 1.0f : core::reciprocal(transformed_pos[3]);
+	// 			v2s32 screen_pos;
+	// 			screen_pos.X = screensize.X *
+	// 				(0.5 * transformed_pos[0] * zDiv + 0.5) - textsize.Width / 2;
+	// 			screen_pos.Y = screensize.Y *
+	// 				(0.5 - transformed_pos[1] * zDiv * 0.5) - textsize.Height / 2;
 
-				core::rect<s32> size(0, 0, textsize.Width, textsize.Height);
-				if (font) {
-					font->draw(
-						utf8_to_wide(hpText).c_str(),
-						size + screen_pos,
-						video::SColor(255, 255, 255, 255),
-						true,
-						true
-					);
-				}
-			}
-        }
-    }
+	// 			core::rect<s32> size(0, 0, textsize.Width, textsize.Height);
+	// 			if (font) {
+	// 				font->draw(
+	// 					utf8_to_wide(hpText).c_str(),
+	// 					size + screen_pos,
+	// 					video::SColor(255, 255, 255, 255),
+	// 					true,
+	// 					true
+	// 				);
+	// 			}
+	// 		}
+    //     }
+    // }
 }
 
 void Camera::update(LocalPlayer* player, f32 frametime, f32 tool_reload_ratio)

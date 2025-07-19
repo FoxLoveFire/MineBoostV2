@@ -21,17 +21,22 @@ void drawBackground(video::IVideoDriver* driver, s32 screenW, s32 screenH) {
     driver->draw2DLine(core::vector2d<s32>(lineX, lineYStart), core::vector2d<s32>(lineX, lineYEnd), video::SColor(255, 121, 121, 121));
 }
 
-void updateScrollBarPosition(gui::IGUIScrollBar* scrollbar, int screenW, int screenH)
+void Menu::updateScrollBarPosition(gui::IGUIScrollBar* scrollbar, int screenW, int screenH)
 {
-    if (!scrollbar)
-        return;
-    core::rect<s32> newRect(
-        (screenW - 300) / 2 + (-45),
-        screenH - 90 + (-85) - 20,
-        (screenW + 300) / 2 + (-45),
-        screenH - 70 + (-85) - 20
-    );
-    scrollbar->setRelativePosition(newRect);
+    if (!scrollbar) return;
+    const int SCROLL_WIDTH = 300;
+    const int SCROLL_HEIGHT = 20;   
+    const int BOTTOM_OFFSET = 25;
+    int bgLeft = (screenW - WIDTH_) / 2;
+    int bgTop = (screenH - HEIGHT_) / 2;
+    int bgBottom = bgTop + HEIGHT_;
+    int left = bgLeft + (WIDTH_ - SCROLL_WIDTH) / 2;
+    int top = bgBottom - BOTTOM_OFFSET - SCROLL_HEIGHT;
+    int right = left + SCROLL_WIDTH;
+    int bottom = bgBottom - BOTTOM_OFFSET;
+    scrollbarTop = bgBottom - BOTTOM_OFFSET - SCROLL_HEIGHT;
+
+    scrollbar->setRelativePosition(core::rect<s32>(left, top, right, bottom));
 }
 
 Menu::Menu(gui::IGUIEnvironment* env,
@@ -143,6 +148,13 @@ void Menu::initCategoryButtons()
     button_render.setOnClick([this]() { onCategoryButtonClick(SettingCategory::RENDER); });
     buttons.push_back(button_render);
 
+    Button button_mouse;
+    button_mouse.addButton(core::rect<s32>(x + 15, y + 15 + 90, x + 15 + 160, y + 15 + 30 + 90),
+    L"Mouse");
+    button_mouse.setColor(video::SColor(115, 0, 0, 0));
+    button_mouse.setOnClick([this]() { onCategoryButtonClick(SettingCategory::MISC); });
+    buttons.push_back(button_mouse);
+
     for (size_t i = 0; i < buttons.size(); i++) {
         buttons[i].setVisible(false);
     }
@@ -253,11 +265,10 @@ void Menu::draw()
 {
     updateScrollBarPosition(scrollbar, screenW, screenH);
     if (isOpen) {
-        drawBackground(driver, screenW, screenH);
         driver->draw2DRectangleOutline(core::rect<s32>(coords_sprite.get_rect()), video::SColor(255, 255, 0, 255));
         driver->draw2DRectangleOutline(core::rect<s32>(fov_sprite.get_rect()), video::SColor(255, 255, 0, 255));
-		driver->draw2DRectangleOutline(core::rect<s32>(chat.get_rect()), video::SColor(255, 255, 0, 255));
-
+        driver->draw2DRectangleOutline(core::rect<s32>(chat.get_rect()), video::SColor(255, 255, 0, 255));
+        drawBackground(driver, screenW, screenH);
 
         for (size_t i = 0; i < buttons.size(); i++) {
             buttons[i].draw(driver);
@@ -271,11 +282,14 @@ void Menu::draw()
             g_settings->setFloat("fov_custom.data", scrollbar->getPos());
         }
 
-        if (current_category == SettingCategory::RENDER) {
-            std::wstring wfov = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes("FOV: " + std::to_string(int(g_settings->getFloat("fov_custom.data"))));
-            font->draw(wfov.c_str(), core::rect<s32>(((screenW - 300) / 2 + (-45)) * 1.72, screenH - 90 + (-85) - 20,
-            (screenW + 300) / 2 + (-45), screenH - 70 + (-85) - 20), video::SColor(255, 255, 255, 255));
-        }
+    if (current_category == SettingCategory::RENDER) {
+        std::wstring wfov = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes("FOV: " + std::to_string(int(g_settings->getFloat("fov_custom.data"))));
+        
+        int offsetX = 190;
+        font->draw(wfov.c_str(), core::rect<s32>(((screenW - 300) / 2 + (-45)) * 1.72 - offsetX, scrollbarTop, // Используем scrollbarTop
+        (screenW + 300) / 2 + (-45) - offsetX, scrollbarTop + 20), video::SColor(255, 255, 255, 255));
+    }
+
 
     } else {
         scrollbar->setVisible(false);

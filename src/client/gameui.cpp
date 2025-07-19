@@ -144,7 +144,7 @@ void GameUI::update(const RunStats &stats, Client *client, MapDrawControl *draw_
 			v2f fov_data = g_settings->getV2F("fov_coords");
 			m_guitext_showfps->setRelativePosition(core::rect<s32>(fov_data[0], fov_data[1], screensize.X, screensize.Y));
 		} else {
-			m_guitext_showfps->setRelativePosition(core::rect<s32>(5, screensize.Y - 25 - g_fontengine->getTextHeight(), 
+			m_guitext_showfps->setRelativePosition(core::rect<s32>(5, screensize.Y - 25 - g_fontengine->getTextHeight(),
 			screensize.X, screensize.Y));
 		}
 		setStaticText(m_guitext_showfps, utf8_to_wide("[FPS: "+std::to_string(int(1.0 / stats.dtime_jitter.avg))+ "]"));
@@ -302,7 +302,6 @@ void GameUI::updateChatSize()
 	if (m_flags.show_basic_debug)
 		chat_y += g_fontengine->getLineHeight();
 
-	
 
 	core::rect<s32> chat_size(chat_x, chat_y, window_size.X - 20, 0);
 	chat_size.LowerRightCorner.Y = std::min((s32)window_size.Y,

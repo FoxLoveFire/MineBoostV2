@@ -74,6 +74,8 @@ public:
 
     virtual void draw();
 
+    void updateScrollBarPosition(gui::IGUIScrollBar* scrollbar, int screenW, int screenH);
+    
     std::vector<Setting> getSettings() {
         std::vector<Setting> settings;
 
@@ -86,8 +88,8 @@ public:
         settings.push_back({"Display sunrise", "display_sunrise", SettingCategory::RENDER});
         settings.push_back({"Disable stars", "disable_stars", SettingCategory::RENDER});
 
-        settings.push_back({"Fast place", "fast_place", SettingCategory::RENDER, {Types::Boolean, 43, 124, "data"}});
-        settings.push_back({"Players HP", "enable_hp_bar", SettingCategory::RENDER});
+        settings.push_back({"Fast place", "fast_place", SettingCategory::MISC, {Types::Boolean, 43, 124, "data"}});
+        //settings.push_back({"Players HP", "enable_hp_bar", SettingCategory::RENDER});
         return settings;
     }
 
@@ -115,6 +117,8 @@ private:
     core::rect<s32> pos;
     IGUIScrollBar* scrollbar;
     gui::IGUIFont* font = g_fontengine->getFont(FONT_SIZE_UNSPECIFIED, FM_Standard);
+
+    int scrollbarTop;
 };
 
 #endif

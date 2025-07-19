@@ -1054,9 +1054,7 @@ void Game::shutdown()
 	gui_chat_console.reset();
 
 	sky.reset();
-
-	manager->drop();
-
+	
 	/* cleanup menus */
 	while (g_menumgr.menuCount() > 0) {
 		g_menumgr.deleteFront();

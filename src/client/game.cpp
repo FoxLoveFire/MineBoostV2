@@ -1329,7 +1329,7 @@ bool Game::createClient(const GameStartData &start_data)
 	 */
 	auto driver_name = driver->getName();
 	std::string str = std::string(PROJECT_NAME_C) +
-			" " + g_version_hash + " [";
+			" " + "5.11.0 "+ " [";
 	str += simple_singleplayer_mode ? gettext("Singleplayer")
 			: gettext("Multiplayer");
 	str += "] [";

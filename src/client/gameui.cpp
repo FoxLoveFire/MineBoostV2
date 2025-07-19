@@ -158,7 +158,7 @@ void GameUI::update(const RunStats &stats, Client *client, MapDrawControl *draw_
 
 		std::ostringstream os(std::ios_base::binary);
 		os << std::fixed
-			<< PROJECT_NAME_C""  << g_version_hash << "[Minetest client]" << std::endl
+			<< PROJECT_NAME_C " "  << "5.11.0" << "[Minetest client]" << std::endl
 			<< "FPS: " << fps << "/" << fps_limit << " | Driver: "  << getVideoDriver()
 			<< std::setprecision(0)
 			<< " | View range: "

@@ -160,7 +160,7 @@ bool ClientLauncher::run(GameStartData &start_data, const Settings &cmd_args)
 		// Set the window caption
 		auto driver_name = m_rendering_engine->getVideoDriver()->getName();
 		std::string caption = std::string(PROJECT_NAME_C) +
-			" " + g_version_hash +
+			" " + "5.11.0" +
 			" [" + gettext("Main Menu") + "]" +
 			" [" + driver_name + "]";
 

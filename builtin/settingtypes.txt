@@ -243,8 +243,8 @@ chat_y (Chat position Y) int 0
 fullbright (Enable fullbright) bool false
 # Fast place
 fast_place (Enable fast place) bool false
-# Show HP bar
-enable_hp_bar.type (HP bar types) enum none text,image
+# This is the value of the block placing. WARNING If the value is less than 0.16, you may have problems on some servers that do not allow low spacing!
+fast_place_value (Value) float 0.16 0.001 0.16
 
 [**Node illumination]
 # Enbale node illumination?

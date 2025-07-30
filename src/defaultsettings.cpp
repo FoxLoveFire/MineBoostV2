@@ -396,8 +396,12 @@ void set_default_settings()
 	settings->setDefault("fov_custom", "true");
 	settings->setDefault("fov_custom.data", "75");
 	settings->setDefault("show_fps", "true");
+	settings->setDefault("fast_place_value", "0.16");
 
 	settings->setDefault("pos_data", "(0, 0)");
+
+	settings->setDefault("keys_x", "0");
+	settings->setDefault("keys_y", "0");
 	// Main menu
 	settings->setDefault("main_menu_path", "");
 	settings->setDefault("serverlist_file", "favoriteservers.json");

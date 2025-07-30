@@ -8,6 +8,9 @@ Sprite_ fov_sprite = Sprite_();
 Sprite_ chat = Sprite_();
 core::vector2d<s32> offset_chp;
 
+Sprite_ keystr = Sprite_();
+core::vector2d<s32> offset_keys;
+
 void drawBackground(video::IVideoDriver* driver, s32 screenW, s32 screenH) {
     s32 x = (screenW - WIDTH_) / 2;
     s32 y = (screenH - HEIGHT_) / 2;
@@ -88,6 +91,13 @@ Menu::Menu(gui::IGUIEnvironment* env,
 	chat.height = 200;
 	chat.x = g_settings->getS32("chat_x");
 	chat.y = g_settings->getS32("chat_y");
+
+
+    keystr.width = 132;
+    keystr.height = 150;
+    keystr.x = g_settings->getS32("keys_x");
+    keystr.y = g_settings->getS32("keys_y");
+
 
     initCategoryButtons();
 }
@@ -228,11 +238,19 @@ bool Menu::OnEvent(const irr::SEvent& event)
 						offset_chp = core::vector2d<s32>(event.MouseInput.X - chat.x, event.MouseInput.Y - chat.y);
 						return true;
 					}
+
+                    if (keystr.get_rect().isPointInside(core::vector2d<s32>(event.MouseInput.X, event.MouseInput.Y))) {
+						keystr.isDragging = true;
+						offset_keys = core::vector2d<s32>(event.MouseInput.X - keystr.x, event.MouseInput.Y - keystr.y);
+						return true;
+					}
+
                 break;
             case irr::EMIE_LMOUSE_LEFT_UP:
                 coords_sprite.isDragging = false;
                 fov_sprite.isDragging = false;
 				chat.isDragging = false;
+                keystr.isDragging = false;
                 break;
             case irr::EMIE_MOUSE_MOVED:
                 if (coords_sprite.isDragging) {
@@ -252,6 +270,13 @@ bool Menu::OnEvent(const irr::SEvent& event)
 					chat.y = event.MouseInput.Y - offset_chp.Y;
 					chat.save(screenWidth, screenHeight, "chat_x", "chat_y");
 				}
+
+				if (keystr.isDragging) {
+					keystr.x = event.MouseInput.X - offset_keys.X;
+					keystr.y = event.MouseInput.Y - offset_keys.Y;
+					keystr.save(screenWidth, screenHeight, "keys_x", "keys_y");
+				}
+
                 break;
             default:
                 break;
@@ -268,6 +293,7 @@ void Menu::draw()
         driver->draw2DRectangleOutline(core::rect<s32>(coords_sprite.get_rect()), video::SColor(255, 255, 0, 255));
         driver->draw2DRectangleOutline(core::rect<s32>(fov_sprite.get_rect()), video::SColor(255, 255, 0, 255));
         driver->draw2DRectangleOutline(core::rect<s32>(chat.get_rect()), video::SColor(255, 255, 0, 255));
+        driver->draw2DRectangleOutline(core::rect<s32>(keystr.get_rect()), video::SColor(255, 255, 0, 255));
         drawBackground(driver, screenW, screenH);
 
         for (size_t i = 0; i < buttons.size(); i++) {
@@ -282,14 +308,13 @@ void Menu::draw()
             g_settings->setFloat("fov_custom.data", scrollbar->getPos());
         }
 
-    if (current_category == SettingCategory::RENDER) {
-        std::wstring wfov = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes("FOV: " + std::to_string(int(g_settings->getFloat("fov_custom.data"))));
-        
-        int offsetX = 190;
-        font->draw(wfov.c_str(), core::rect<s32>(((screenW - 300) / 2 + (-45)) * 1.72 - offsetX, scrollbarTop, // Используем scrollbarTop
-        (screenW + 300) / 2 + (-45) - offsetX, scrollbarTop + 20), video::SColor(255, 255, 255, 255));
-    }
-
+        if (current_category == SettingCategory::RENDER) {
+            std::wstring wfov = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes("FOV: " + std::to_string(int(g_settings->getFloat("fov_custom.data"))));
+            
+            int offsetX = 190;
+            font->draw(wfov.c_str(), core::rect<s32>(((screenW - 300) / 2 + (-45)) * 1.72 - offsetX, scrollbarTop,
+            (screenW + 300) / 2 + (-45) - offsetX, scrollbarTop + 20), video::SColor(255, 255, 255, 255));
+        }
 
     } else {
         scrollbar->setVisible(false);

@@ -1,7 +1,6 @@
---settings, choose what you want
-local hudpos = {x = 0.925, y = 0.725}--the position coordinates are the percentage of the screen, ranging in value from 0 to 1. 0 means left/top, 1 means right/bottom.
---i recommend you dont set any to one as part of it wont be visible, max you should set one of the values to so you can still see it is 0.925 for x and 0.725 for y
-local huds_sprite = core.create_sprite({x = 0.8738, y = 0.7214, width = 132, height = 150})
+local screenW = minetest.settings:get("screen_width") or 1920
+local screenH = minetest.settings:get("screen_height") or 1080 
+local hudpos = {x = 0.925, y = 0.725}
 
 local rmb_sprite = core.create_sprite({x = 0.897, y = 0.931, width = 118, height = 16})
 local lmb_sprite = core.create_sprite({x = 0.897, y = 0.9299, width = 118, height = 16})
@@ -71,7 +70,6 @@ local function check()
         image_normal = image_normal_54
     end
 
-    -- Добавляем HUD только если он еще не добавлен
     if not rmbcps then
         rmbcps = minetest.localplayer:hud_add({hud_elem_type = "text", position = hudpos, offset = {x = -33, y = 159}, text = "RMB CPS: 0", alignment = {x = 1, y = 1}, scale = {x = 1, y = 1}, number = 0xFFFFFF})
     end
@@ -81,7 +79,7 @@ local function check()
 
     huds = {}
     for _, key in ipairs(keys) do
-        if not huds[key] then  -- Проверка на существование HUD
+        if not huds[key] then
             huds[key] = minetest.localplayer:hud_add(huddefs[key])
         end
     end
@@ -93,11 +91,12 @@ local timer = 0
 minetest.register_globalstep(function(dtime)
     if not minetest.settings:get_bool("show_keys") then return end
     if not minetest.localplayer then return end
-    local x_h, y_h = core.get_position({id = huds_sprite})
 
+    local keys_x_n = minetest.settings:get("keys_x") or 0.925
+    local keys_y_n = minetest.settings:get("keys_y") or 0.725
     for _, key in ipairs(keys) do
         if huds[key] then
-            minetest.localplayer:hud_change(huds[key], "position", {x = x_h + 0.052, y = y_h})
+            minetest.localplayer:hud_change(huds[key], "position", {x = keys_x_n / screenW + 0.034, y = keys_y_n / screenH + 0.02})
         end
     end
 
@@ -114,17 +113,38 @@ minetest.register_globalstep(function(dtime)
         minetest.localplayer:hud_change(lmbcps, "offset", {x = 0, y = 0})
     end
 
-    timer = timer + dtime
-    if timer >= 0.5 then
-        -- checkfps()
-        -- minetest.localplayer:hud_change(framesps, "text", "FPS: " .. fps)
-        -- timer = 0
-    end
 end)
 
 local rmbclicks = 0
 local rmbpress = false
 local rmbtimer = 0
+local function update_hud_positions()
+    if not minetest.localplayer then return end
+
+    local keys_x_n = minetest.settings:get("keys_x") or 0.925
+    local keys_y_n = minetest.settings:get("keys_y") or 0.725
+
+    for _, key in ipairs(keys) do
+        if huds[key] then
+            minetest.localplayer:hud_change(huds[key], "position", {x = keys_x_n / screenW + 0.034, y = keys_y_n / screenH + 0.02})
+        end
+    end
+
+    if rmbcps then
+        local x_r, y_r = core.get_position({id = rmb_sprite})
+        minetest.localplayer:hud_change(rmbcps, "position", {x = x_r, y = y_r})
+    end
+
+    if lmbcps then
+        local x_l, y_l = core.get_position({id = lmb_sprite})
+        minetest.localplayer:hud_change(lmbcps, "position", {x = x_l, y = y_l})
+    end
+end
+
+minetest.register_globalstep(function(dtime)
+    if not minetest.settings:get_bool("show_keys") then return end
+    update_hud_positions()
+end)
 
 minetest.register_globalstep(function(dtime)
     if not minetest.settings:get_bool("show_keys") then return end
@@ -142,7 +162,7 @@ minetest.register_globalstep(function(dtime)
         rmbpress = ctl.place
     end
 
-    if rmbcps then  -- Проверка на существование HUD
+    if rmbcps then
         minetest.localplayer:hud_change(rmbcps, "text", "RMB CPS: " .. rmbclicks)
     end
 
@@ -196,12 +216,12 @@ minetest.register_globalstep(function()
             end
             for _, key in ipairs(keys) do
                 if controls[key] and not before[key] then
-                    if huds[key] then  -- Проверка на существование HUD
+                    if huds[key] then
                         player:hud_change(huds[key], "text", image_press[key])
                     end
                     before[key] = true
                 elseif not controls[key] and before[key] then
-                    if huds[key] then  -- Проверка на существование HUD
+                    if huds[key] then
                         player:hud_change(huds[key], "text", image_normal[key])
                     end
                     before[key] = false
@@ -224,5 +244,3 @@ end)
 
     Made by Minetest-j45 -> https://github.com/Minetest-j45
 ]]--
-
-

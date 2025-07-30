@@ -353,7 +353,7 @@ void GameFormSpec::showPauseMenu()
 	if (!control_text.empty()) {
 	os		<< "textarea[7.5,0.25;3.9,6.25;;" << control_text << ";]";
 	}
-	os		<< "textarea[0.4,0.25;3.9,6.25;;" << PROJECT_NAME_C " " VERSION_STRING "\n"
+	os		<< "textarea[0.4,0.25;3.9,6.25;;" << PROJECT_NAME_C << " 5.11.0" << "\n"
 		<< "\n"
 		<<  strgettext("Game info:") << "\n";
 	const std::string &address = m_client->getAddressName();

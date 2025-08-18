@@ -167,6 +167,7 @@ void set_default_settings()
 	settings->setDefault("keymap_toggle_chat", "KEY_F2");
 	settings->setDefault("keymap_toggle_fog", "KEY_F3");
 	settings->setDefault("keymap_sprite_manager", "KEY_KEY_H");
+	settings->setDefault("keymap_toggle_left_hand", "KEY_KEY_F");
 	settings->setDefault("keymap_menu", "KEY_RSHIFT");
 #ifndef NDEBUG
 	settings->setDefault("keymap_toggle_update_camera", "KEY_F4");
@@ -397,6 +398,7 @@ void set_default_settings()
 	settings->setDefault("fov_custom.data", "75");
 	settings->setDefault("show_fps", "true");
 	settings->setDefault("fast_place_value", "0.16");
+	settings->setDefault("left_hand", "true");
 
 	settings->setDefault("pos_data", "(0, 0)");
 

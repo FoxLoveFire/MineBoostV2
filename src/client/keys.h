@@ -58,6 +58,7 @@ public:
 		ZOOM,
 		SPRITES,
 		MENU,
+		LEFT_HAND,
 
 		QUICKTUNE_NEXT,
 		QUICKTUNE_PREV,

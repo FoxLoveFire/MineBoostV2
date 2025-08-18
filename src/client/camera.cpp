@@ -638,6 +638,22 @@ void Camera::update(LocalPlayer* player, f32 frametime, f32 tool_reload_ratio)
 		wield_position.X -= std::sin(bobfrac*M_PI*2.0) * 3.0;
 		wield_position.Y += std::sin(my_modf(bobfrac*2.0)*M_PI) * 3.0;
 	}
+
+	if (g_settings->getBool("left_hand")) {
+		wield_position.X = -wield_position.X;
+
+		core::quaternion quat(wield_rotation * core::DEGTORAD);
+
+		quat.X = -quat.X;
+		quat.W = -quat.W;
+
+		core::quaternion pitchFix(v3f(180, 0, 180) * core::DEGTORAD);
+		quat = pitchFix * quat;
+
+		quat.toEuler(wield_rotation);
+		wield_rotation *= core::RADTODEG;
+	}
+	
 	m_wieldnode->setPosition(wield_position);
 	m_wieldnode->setRotation(wield_rotation);
 

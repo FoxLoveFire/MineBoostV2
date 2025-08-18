@@ -1885,6 +1885,9 @@ void Game::processKeyInput()
 		menu->create();
 	} else if (wasKeyDown(KeyType::NOCLIP)) {
 		toggleNoClip();
+	} else if (wasKeyDown(KeyType::LEFT_HAND)) {
+		bool p = g_settings->getBool("left_hand");
+		g_settings->setBool("left_hand", !p);
 #if USE_SOUND
 	} else if (wasKeyDown(KeyType::MUTE)) {
 		if (g_settings->getBool("enable_sound")) {

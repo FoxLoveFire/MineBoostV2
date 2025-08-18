@@ -2604,3 +2604,6 @@ keymap_increase_viewing_range_min (View range increase key) key +
 
 #    Key for decreasing the viewing range.
 keymap_decrease_viewing_range_min (View range decrease key) key -
+
+#    Key for left hand
+keymap_toggle_left_hand (Left hand bind) key KEY_KEY_F

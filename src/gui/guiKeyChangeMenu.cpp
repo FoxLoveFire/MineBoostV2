@@ -66,6 +66,7 @@ enum
 	GUI_ID_CB_AUX1_DESCENDS,
 	GUI_ID_CB_DOUBLETAP_JUMP,
 	GUI_ID_CB_AUTOJUMP,
+	GUI_ID_BIND_LH,
 };
 
 GUIKeyChangeMenu::GUIKeyChangeMenu(gui::IGUIEnvironment* env,
@@ -400,4 +401,5 @@ void GUIKeyChangeMenu::init_keys()
 	this->add_key(GUI_ID_KEY_HUD_BUTTON,          wstrgettext("Toggle HUD"),       "keymap_toggle_hud");
 	this->add_key(GUI_ID_KEY_CHATLOG_BUTTON,      wstrgettext("Toggle chat log"),  "keymap_toggle_chat");
 	this->add_key(GUI_ID_KEY_FOG_BUTTON,          wstrgettext("Toggle fog"),       "keymap_toggle_fog");
+	this->add_key(GUI_ID_BIND_LH,          		  wstrgettext("Switch hand"),      "keymap_toggle_left_hand");
 }

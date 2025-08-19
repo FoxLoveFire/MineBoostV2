@@ -219,6 +219,14 @@ display_sunrise (Display sunrise) bool true
 force_custom_skybox (Force custom skybox) bool false
 # Enable force render skybox?
 force_render_skybox (Force render skybox) bool true
+# Enbale custom fog?
+use_custom_fog_color (Custom fog color) bool false
+# Color of fog
+custom_fog_color (Fog color) string (0,0,0)
+# Enable sky color 
+use_custom_sky_color (custom sky color) bool false
+# Color of sky 
+custom_sky_color (Sky color) string (0,0,0)
 
 [**Water]
 # Disable water effect?

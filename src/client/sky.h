@@ -11,6 +11,8 @@
 #include "camera.h" // CameraMode
 #include "irr_ptr.h"
 #include "skyparams.h"
+#include "irr_v3d.h"
+#include "settings.h"
 
 #define SKY_MATERIAL_COUNT 12
 
@@ -116,6 +118,12 @@ public:
 
 	void setFogColor(video::SColor v) { m_sky_params.fog_color = v; }
 	video::SColor getFogColor() const {
+
+		if (g_settings->getBool("use_custom_fog_color")) {
+			v3f color = g_settings->getV3F("custom_fog_color").value_or(v3f());
+			return video::SColor(0, color.X, color.Y, color.Z);
+		}
+		
 		if (m_sky_params.fog_color.getAlpha() > 0)
 			return m_sky_params.fog_color;
 		return getBgColor();

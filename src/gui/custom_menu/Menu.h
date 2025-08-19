@@ -87,6 +87,8 @@ public:
         settings.push_back({"Node \n illumination", "node_illumination", SettingCategory::RENDER});
         settings.push_back({"Display sunrise", "display_sunrise", SettingCategory::RENDER});
         settings.push_back({"Disable stars", "disable_stars", SettingCategory::RENDER});
+        settings.push_back({"Custom Fog", "use_custom_fog_color", SettingCategory::RENDER});
+        settings.push_back({"Sky color","use_custom_sky_color", SettingCategory::RENDER});
 
         settings.push_back({"Fast place", "fast_place", SettingCategory::MISC, {Types::Boolean, 43, 124, "data"}});
         //settings.push_back({"Players HP", "enable_hp_bar", SettingCategory::RENDER});

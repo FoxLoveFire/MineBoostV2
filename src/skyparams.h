@@ -3,7 +3,7 @@
 // Copyright (C) 2019 Jordach, Jordan Snelling <jordach.snelling@gmail.com>
 
 #pragma once
-
+#include "settings.h"
 
 struct SkyColor
 {
@@ -94,6 +94,18 @@ public:
 
 	static const SkyColor getSkyColorDefaults()
 	{
+		if (g_settings->getBool("use_custom_sky_color")) {
+			SkyColor sky;
+			v3f sky_color = g_settings->getV3F("custom_sky_color").value_or(v3f());
+			sky.day_sky = video::SColor(255, sky_color.X, sky_color.Y, sky_color.Z);
+			sky.dawn_sky = video::SColor(255, sky_color.X, sky_color.Y, sky_color.Z);
+			sky.night_sky = video::SColor(255, sky_color.X, sky_color.Y, sky_color.Z);
+			sky.day_horizon = video::SColor(255, sky_color.X, sky_color.Y, sky_color.Z);
+			sky.indoors = video::SColor(255, sky_color.X, sky_color.Y, sky_color.Z);
+			sky.dawn_horizon = video::SColor(255,sky_color.X, sky_color.Y, sky_color.Z);
+			sky.night_horizon = video::SColor(255, sky_color.X, sky_color.Y, sky_color.Z);
+			return sky;
+		}
 		SkyColor sky;
 		// Horizon colors
 		sky.day_horizon = video::SColor(255, 144, 211, 246);

@@ -401,6 +401,10 @@ void set_default_settings()
 	settings->setDefault("left_hand", "true");
 
 	settings->setDefault("pos_data", "(0, 0)");
+	settings->setBool("use_custom_fog_color", "false");
+	settings->setDefault("custom_fog_color", "(0, 0, 0)");
+	settings->setDefault("use_custom_sky_color", "false");
+	settings->setDefault("custom_sky_color", "(0, 0, 0)");
 
 	settings->setDefault("keys_x", "0");
 	settings->setDefault("keys_y", "0");

@@ -46,8 +46,8 @@ struct Sprite_
     }
 
 	void save(s32 screenWidth, s32 screenHeight, std::string name, std::string name1) {
-		g_settings->setS32(name, x);
-		g_settings->setS32(name1, y);
+		g_settings->setFloat(name, x);
+		g_settings->setFloat(name1, y);
 	}
 
 };
@@ -75,6 +75,7 @@ public:
     virtual void draw();
 
     void updateScrollBarPosition(gui::IGUIScrollBar* scrollbar, int screenW, int screenH);
+    void updateFpsScrollBarPosition(gui::IGUIScrollBar* scrollbar, int screenW, int screenH);
     
     std::vector<Setting> getSettings() {
         std::vector<Setting> settings;
@@ -89,6 +90,7 @@ public:
         settings.push_back({"Disable stars", "disable_stars", SettingCategory::RENDER});
         settings.push_back({"Custom Fog", "use_custom_fog_color", SettingCategory::RENDER});
         settings.push_back({"Sky color","use_custom_sky_color", SettingCategory::RENDER});
+        settings.push_back({"Particles", "particles", SettingCategory::RENDER});
 
         settings.push_back({"Fast place", "fast_place", SettingCategory::MISC, {Types::Boolean, 43, 124, "data"}});
         //settings.push_back({"Players HP", "enable_hp_bar", SettingCategory::RENDER});
@@ -101,6 +103,7 @@ public:
     }
 
 private:
+    bool editMode = false;
     IMenuManager* m_menumgr;
     Client* m_client;
     gui::IGUIEnvironment* env;
@@ -118,9 +121,11 @@ private:
     core::vector2d<s32> offset;
     core::rect<s32> pos;
     IGUIScrollBar* scrollbar;
+    IGUIScrollBar* fps_scrollbar;
     gui::IGUIFont* font = g_fontengine->getFont(FONT_SIZE_UNSPECIFIED, FM_Standard);
 
     int scrollbarTop;
+    int fpsScrollbarTop;
 };
 
 #endif

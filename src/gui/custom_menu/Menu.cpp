@@ -232,6 +232,12 @@ bool Menu::OnEvent(const irr::SEvent& event)
 {
     s32 screenWidth = Environment->getVideoDriver()->getScreenSize().Width, screenHeight = Environment->getVideoDriver()->getScreenSize().Height;
     
+    if (event.EventType == irr::EET_KEY_INPUT_EVENT) {
+        if (event.KeyInput.Key == KEY_MENU || event.KeyInput.Key == KEY_LMENU || event.KeyInput.Key == KEY_RMENU) {
+            altPressed = event.KeyInput.PressedDown;
+        }
+    }
+
     if (event.EventType == irr::EET_KEY_INPUT_EVENT && isOpen) {
         if (event.KeyInput.Key == KEY_ESCAPE && event.KeyInput.PressedDown) {
             close();
@@ -239,7 +245,7 @@ bool Menu::OnEvent(const irr::SEvent& event)
         }
         
         if (event.KeyInput.Key == KEY_KEY_E && event.KeyInput.PressedDown && 
-            (event.KeyInput.Shift || GetAsyncKeyState(VK_MENU) || GetAsyncKeyState(VK_LMENU) || GetAsyncKeyState(VK_RMENU))) {
+            (event.KeyInput.Shift || altPressed)) {
             editMode = !editMode;
             return true;
         }

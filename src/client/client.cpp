@@ -21,6 +21,8 @@
 #include "client/mesh_generator_thread.h"
 #include "client/particles.h"
 #include "client/localplayer.h"
+#include "client/friendlist.h"
+#include "chatmessage.h"
 #include "util/auth.h"
 #include "util/directiontables.h"
 #include "util/pointedthing.h"
@@ -1692,6 +1694,72 @@ bool Client::getChatMessage(std::wstring &res)
 	return true;
 }
 
+// Handles the local-only ".friend" family of commands used by the friend
+// list / friend ESP system. Returns true if the message was a friend
+// command (whether it succeeded or not) and should therefore NOT be sent
+// to the server.
+static bool handleLocalFriendCommand(Client *client, const std::string &message_utf8)
+{
+	static const std::string prefix = ".friend";
+	if (message_utf8.compare(0, prefix.size(), prefix) != 0)
+		return false;
+
+	// Must be either exactly ".friend" or followed by a space so that
+	// e.g. ".friendly" is not mistakenly treated as a command.
+	if (message_utf8.size() > prefix.size() && message_utf8[prefix.size()] != ' ')
+		return false;
+
+	std::string rest = trim(message_utf8.substr(prefix.size()));
+
+	std::string sub, arg;
+	std::string::size_type sp = rest.find(' ');
+	if (sp == std::string::npos) {
+		sub = rest;
+	} else {
+		sub = rest.substr(0, sp);
+		arg = trim(rest.substr(sp + 1));
+	}
+	sub = lowercase(sub);
+
+	std::wstring reply;
+
+	if (sub == "add") {
+		if (arg.empty()) {
+			reply = L"[MineBoostV2] Usage: .friend add <Nickname>";
+		} else if (FriendList::get().add(arg)) {
+			reply = L"[MineBoostV2] Added \"" + utf8_to_wide(arg) + L"\" to your friend list.";
+		} else {
+			reply = L"[MineBoostV2] \"" + utf8_to_wide(arg) + L"\" is already on your friend list.";
+		}
+	} else if (sub == "del" || sub == "remove") {
+		if (arg.empty()) {
+			reply = L"[MineBoostV2] Usage: .friend del <Nickname>";
+		} else if (FriendList::get().remove(arg)) {
+			reply = L"[MineBoostV2] Removed \"" + utf8_to_wide(arg) + L"\" from your friend list.";
+		} else {
+			reply = L"[MineBoostV2] \"" + utf8_to_wide(arg) + L"\" was not on your friend list.";
+		}
+	} else if (sub == "list") {
+		const auto &friends = FriendList::get().getAll();
+		if (friends.empty()) {
+			reply = L"[MineBoostV2] Your friend list is empty.";
+		} else {
+			std::wstring names;
+			for (const auto &name : friends) {
+				if (!names.empty())
+					names += L", ";
+				names += utf8_to_wide(name);
+			}
+			reply = L"[MineBoostV2] Friends: " + names;
+		}
+	} else {
+		reply = L"[MineBoostV2] Unknown sub-command. Use: .friend add|del|list <Nickname>";
+	}
+
+	client->pushToChatQueue(new ChatMessage(CHATMESSAGE_TYPE_SYSTEM, reply));
+	return true;
+}
+
 void Client::typeChatMessage(const std::wstring &message)
 {
 	// Discard empty line
@@ -1700,6 +1768,10 @@ void Client::typeChatMessage(const std::wstring &message)
 
 	auto message_utf8 = wide_to_utf8(message);
 	infostream << "Typed chat message: \"" << message_utf8 << "\"" << std::endl;
+
+	// Local client-side friend list commands never reach the server.
+	if (handleLocalFriendCommand(this, message_utf8))
+		return;
 
 	// If message was consumed by script API, don't send it to server
 	if (m_mods_loaded && m_script->on_sending_message(message_utf8))

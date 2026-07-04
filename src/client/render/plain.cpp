@@ -48,6 +48,7 @@ void DrawHUD::run(PipelineContext &context)
 
 		context.hud->drawLuaElements(context.client->getCamera()->getOffset());
 		context.client->getCamera()->drawNametags();
+		context.client->getCamera()->drawFriendESP();
 		if (g_settings->getBool("enable_hp_bar")) {
 			context.client->getCamera()->drawHealthBar();
 		}

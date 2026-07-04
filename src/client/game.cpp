@@ -18,6 +18,7 @@
 #include "client/joystick_controller.h"
 #include "client/mapblock_mesh.h"
 #include "client/sound.h"
+#include "client/discordrpc.h"
 #include "clientmap.h"
 #include "clientmedia.h" // For clientMediaUpdateCacheCopy
 #include "clouds.h"
@@ -997,6 +998,8 @@ void Game::run()
 			break;
 		if (!m_game_formspec.handleCallbacks())
 			break;
+
+		DiscordRPC::get().poll();
 
 		processQueues();
 
@@ -4166,6 +4169,19 @@ void the_game(bool *kill,
 
 		if (game.startup(kill, input, rendering_engine, start_data,
 				error_message, reconnect_requested, &chat_backend)) {
+			if (start_data.isSinglePlayer()) {
+				std::string world_display = start_data.world_spec.name.empty() ?
+					"Unnamed world" : start_data.world_spec.name;
+				DiscordRPC::get().setActivity(
+					"Playing singleplayer", "World: " + world_display,
+					"mineboostv2_logo", "MineBoostV2", "", "", true);
+			} else {
+				std::string server_display = start_data.server_name.empty() ?
+					start_data.address : start_data.server_name;
+				DiscordRPC::get().setActivity(
+					"In multiplayer", "Server: " + server_display,
+					"mineboostv2_logo", "MineBoostV2", "", "", true);
+			}
 			game.run();
 		}
 
@@ -4191,4 +4207,7 @@ void the_game(bool *kill,
 	}
 
 	game.shutdown();
+
+	DiscordRPC::get().setActivity(
+		"In the main menu", "", "mineboostv2_logo", "MineBoostV2", "", "", true);
 }

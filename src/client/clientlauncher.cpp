@@ -17,6 +17,7 @@
 #include "gui/guiEngine.h"
 #include "fontengine.h"
 #include "clientlauncher.h"
+#include "discordrpc.h"
 #include "version.h"
 #include "renderingengine.h"
 #include "settings.h"
@@ -149,6 +150,14 @@ bool ClientLauncher::run(GameStartData &start_data, const Settings &cmd_args)
 
 	bool first_loop = true;
 
+	// MineBoostV2 Discord Rich Presence. Replace this with your own
+	// Application ID from https://discord.com/developers/applications
+	// (leave empty to disable Discord RPC entirely).
+	static const std::string DISCORD_CLIENT_ID = "1469076486806831309";
+	DiscordRPC::get().init(DISCORD_CLIENT_ID);
+	DiscordRPC::get().setActivity(
+		"In the main menu", "", "mineboostv2_logo", "MineBoostV2", "", "", true);
+
 	/*
 		Menu-game loop
 	*/
@@ -256,6 +265,8 @@ bool ClientLauncher::run(GameStartData &start_data, const Settings &cmd_args)
 	assert(g_menuclouds->getReferenceCount() == 1);
 	g_menuclouds->drop();
 	g_menuclouds = nullptr;
+
+	DiscordRPC::get().shutdown();
 
 	return retval;
 }
@@ -461,6 +472,7 @@ bool ClientLauncher::launch_game(std::string &error_message,
 		start_data.password = menudata.password;
 		start_data.address = std::move(menudata.address);
 		start_data.allow_login_or_register = menudata.allow_login_or_register;
+		start_data.server_name = menudata.servername;
 		server_name = menudata.servername;
 		server_description = menudata.serverdescription;
 

@@ -82,6 +82,7 @@ public:
 
         settings.push_back({"KeyStroker", "show_keys", SettingCategory::GUI});
         settings.push_back({"Show coords", "show_coords", SettingCategory::GUI});
+        settings.push_back({"Discord RPC", "discord_rpc_enabled", SettingCategory::GUI});
 
         settings.push_back({"Fullbright", "fullbright", SettingCategory::RENDER});
         settings.push_back({"Water Effect", "small_post_effect_color", SettingCategory::RENDER});

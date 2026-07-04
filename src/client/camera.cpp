@@ -10,8 +10,12 @@
 #include "clientmap.h"     // MapDrawControl
 #include "player.h"
 #include <cmath>
+#include <unordered_map>
+#include <algorithm>
 #include "client/renderingengine.h"
 #include "client/content_cao.h"
+#include "client/clientenvironment.h"
+#include "client/friendlist.h"
 #include "settings.h"
 #include "wieldmesh.h"
 #include "noise.h"         // easeCurve
@@ -754,8 +758,13 @@ void Camera::drawNametags()
 	video::IVideoDriver *driver = RenderingEngine::get_video_driver();
 	v2u32 screensize = driver->getScreenSize();
 
+	static const video::SColor friend_color(255, 60, 230, 110);
+	static const video::SColor friend_bg(190, 15, 60, 30);
+
 	for (const Nametag *nametag : m_nametags) {
 		// Nametags are hidden in GenericCAO::updateNametag()
+
+		bool is_friend = FriendList::get().isFriend(nametag->text);
 
 		v3f pos = nametag->parent_node->getAbsolutePosition() + nametag->pos * BS;
 		f32 transformed_pos[4] = { pos.X, pos.Y, pos.Z, 1.0f };
@@ -763,6 +772,17 @@ void Camera::drawNametags()
 		if (transformed_pos[3] > 0) {
 			std::wstring nametag_colorless =
 				unescape_translate(utf8_to_wide(nametag->text));
+
+			std::wstring display_text =
+				translate_string(utf8_to_wide(nametag->text));
+			if (is_friend) {
+				f32 distance = (pos - m_camera_position).getLength() / BS;
+				std::wstring suffix =
+					L" [" + std::to_wstring((int)distance) + L"m]";
+				nametag_colorless += suffix;
+				display_text += suffix;
+			}
+
 			core::dimension2d<u32> textsize = font->getDimension(
 				nametag_colorless.c_str());
 			f32 zDiv = transformed_pos[3] == 0.0f ? 1.0f :
@@ -774,16 +794,94 @@ void Camera::drawNametags()
 				(0.5 - transformed_pos[1] * zDiv * 0.5) - textsize.Height / 2;
 			core::rect<s32> size(0, 0, textsize.Width, textsize.Height);
 
-			auto bgcolor = nametag->getBgColor(m_show_nametag_backgrounds);
+			video::SColor textcolor = is_friend ? friend_color : nametag->textcolor;
+			auto bgcolor = is_friend ? friend_bg :
+				nametag->getBgColor(m_show_nametag_backgrounds);
 			if (bgcolor.getAlpha() != 0) {
 				core::rect<s32> bg_size(-2, 0, textsize.Width + 2, textsize.Height);
 				driver->draw2DRectangle(bgcolor, bg_size + screen_pos);
 			}
 
-			font->draw(
-				translate_string(utf8_to_wide(nametag->text)).c_str(),
-				size + screen_pos, nametag->textcolor);
+			font->draw(display_text.c_str(), size + screen_pos, textcolor);
 		}
+	}
+}
+
+void Camera::drawFriendESP()
+{
+	const auto &friends = FriendList::get().getAll();
+	if (friends.empty())
+		return; // Nothing to do, avoid the active object scan below.
+
+	core::matrix4 trans = m_cameranode->getProjectionMatrix();
+	trans *= m_cameranode->getViewMatrix();
+
+	video::IVideoDriver *driver = RenderingEngine::get_video_driver();
+	v2u32 screensize = driver->getScreenSize();
+
+	static const video::SColor box_outline(255, 60, 230, 110);
+	static const video::SColor box_fill(60, 60, 230, 110);
+
+	// Projects a world position to screen space. Returns false if the
+	// point lies behind the camera.
+	auto project = [&](const v3f &pos, v2s32 &out) -> bool {
+		f32 transformed_pos[4] = { pos.X, pos.Y, pos.Z, 1.0f };
+		trans.multiplyWith1x4Matrix(transformed_pos);
+		if (transformed_pos[3] <= 0)
+			return false;
+		f32 zDiv = transformed_pos[3] == 0.0f ? 1.0f : core::reciprocal(transformed_pos[3]);
+		out.X = screensize.X * (0.5f * transformed_pos[0] * zDiv + 0.5f);
+		out.Y = screensize.Y * (0.5f - transformed_pos[1] * zDiv * 0.5f);
+		return true;
+	};
+
+	std::unordered_map<u16, ClientActiveObject*> objects;
+	m_client->getEnv().getAllActiveObjects(objects);
+
+	for (const auto &pair : objects) {
+		ClientActiveObject *obj = pair.second;
+		GenericCAO *cao = dynamic_cast<GenericCAO*>(obj);
+		if (!cao || !cao->isPlayer())
+			continue;
+
+		if (!FriendList::get().isFriend(cao->getName()))
+			continue;
+
+		v3f base_pos = cao->getPosition();
+
+		// Project the corners of the player's selection box to screen
+		// space and highlight it, so friends stand out clearly even
+		// through walls.
+		aabb3f box(v3f(0.0f, 0.0f, 0.0f), v3f(0.0f, 0.0f, 0.0f));
+		if (!cao->getSelectionBox(&box))
+			continue;
+
+		v2s32 min_pt(0x7fffffff, 0x7fffffff);
+		v2s32 max_pt(-0x7fffffff, -0x7fffffff);
+		bool any_corner_visible = false;
+
+		for (int i = 0; i < 8; i++) {
+			v3f corner(
+				(i & 1) ? box.MaxEdge.X : box.MinEdge.X,
+				(i & 2) ? box.MaxEdge.Y : box.MinEdge.Y,
+				(i & 4) ? box.MaxEdge.Z : box.MinEdge.Z);
+			v2s32 screen_pt;
+			if (!project(base_pos + corner, screen_pt))
+				continue;
+			any_corner_visible = true;
+			min_pt.X = std::min(min_pt.X, screen_pt.X);
+			min_pt.Y = std::min(min_pt.Y, screen_pt.Y);
+			max_pt.X = std::max(max_pt.X, screen_pt.X);
+			max_pt.Y = std::max(max_pt.Y, screen_pt.Y);
+		}
+
+		if (!any_corner_visible)
+			continue;
+
+		core::rect<s32> box_rect(min_pt.X, min_pt.Y, max_pt.X, max_pt.Y);
+		box_rect.repair();
+		driver->draw2DRectangle(box_fill, box_rect);
+		driver->draw2DRectangleOutline(box_rect, box_outline, 2);
 	}
 }
 

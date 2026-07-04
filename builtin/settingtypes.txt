@@ -260,6 +260,10 @@ node_illumination (Node illumination) bool false
 # Node illumination color
 node_color (Node illumination color) string (255,0,0)
 
+[**Discord]
+# Enable Discord Rich Presence (shows what you're playing on your Discord profile)?
+discord_rpc_enabled (Discord Rich Presence) bool true
+
 [Graphics and Audio]
 
 [*Graphics]

@@ -657,7 +657,7 @@ void Camera::update(LocalPlayer* player, f32 frametime, f32 tool_reload_ratio)
 		quat.toEuler(wield_rotation);
 		wield_rotation *= core::RADTODEG;
 	}
-	
+
 	m_wieldnode->setPosition(wield_position);
 	m_wieldnode->setRotation(wield_rotation);
 

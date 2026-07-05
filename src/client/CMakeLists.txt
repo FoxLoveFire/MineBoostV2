@@ -59,6 +59,8 @@ set(client_SRCS
 	${CMAKE_CURRENT_SOURCE_DIR}/joystick_controller.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/keycode.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/localplayer.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/friendlist.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/discordrpc.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/mapblock_mesh.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/mesh.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/mesh_generator_thread.cpp

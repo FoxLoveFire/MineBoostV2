@@ -123,7 +123,7 @@ public:
 			v3f color = g_settings->getV3F("custom_fog_color").value_or(v3f());
 			return video::SColor(0, color.X, color.Y, color.Z);
 		}
-		
+
 		if (m_sky_params.fog_color.getAlpha() > 0)
 			return m_sky_params.fog_color;
 		return getBgColor();

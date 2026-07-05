@@ -192,6 +192,12 @@ public:
 
 	void drawNametags();
 
+	// Draws name labels over friends (see FriendList), regardless of
+	// whether they are occluded by terrain, so they're always easy to
+	// spot. This only ever shows information about players the user has
+	// explicitly added as a friend via the ".friend add" chat command.
+	void drawFriendESP();
+
 	inline void addArmInertia(f32 player_yaw);
 
 	void drawHealthBar();

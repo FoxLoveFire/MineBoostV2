@@ -223,9 +223,9 @@ force_render_skybox (Force render skybox) bool true
 use_custom_fog_color (Custom fog color) bool false
 # Color of fog
 custom_fog_color (Fog color) string (0,0,0)
-# Enable sky color 
+# Enable sky color
 use_custom_sky_color (custom sky color) bool false
-# Color of sky 
+# Color of sky
 custom_sky_color (Sky color) string (0,0,0)
 
 [**Water]
@@ -259,6 +259,10 @@ fast_place_value (Value) float 0.16 0.001 0.16
 node_illumination (Node illumination) bool false
 # Node illumination color
 node_color (Node illumination color) string (255,0,0)
+
+[**Discord]
+# Enable Discord Rich Presence (shows what you're playing on your Discord profile)?
+discord_rpc_enabled (Discord Rich Presence) bool true
 
 [Graphics and Audio]
 

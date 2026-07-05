@@ -34,8 +34,6 @@ public:
     void setSetting(Setting &setting);
 
 private:
-    int X, Y;
-    int w, h;
     irr::video::SColor color_def = irr::video::SColor(105, 0, 0, 0);
     irr::video::SColor color_press = irr::video::SColor(255, 0, 255, 0);
 

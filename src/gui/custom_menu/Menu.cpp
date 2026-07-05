@@ -28,7 +28,7 @@ void Menu::updateScrollBarPosition(gui::IGUIScrollBar* scrollbar, int screenW, i
 {
     if (!scrollbar) return;
     const int SCROLL_WIDTH = 300;
-    const int SCROLL_HEIGHT = 20;   
+    const int SCROLL_HEIGHT = 20;
     const int BOTTOM_OFFSET = 25;
     int bgLeft = (screenW - WIDTH_) / 2;
     int bgTop = (screenH - HEIGHT_) / 2;
@@ -46,7 +46,7 @@ void Menu::updateFpsScrollBarPosition(gui::IGUIScrollBar* scrollbar, int screenW
 {
     if (!scrollbar) return;
     const int SCROLL_WIDTH = 300;
-    const int SCROLL_HEIGHT = 20;   
+    const int SCROLL_HEIGHT = 20;
     const int BOTTOM_OFFSET = 65;
     int bgLeft = (screenW - WIDTH_) / 2;
     int bgTop = (screenH - HEIGHT_) / 2;
@@ -231,15 +231,21 @@ void Menu::close()
 bool Menu::OnEvent(const irr::SEvent& event)
 {
     s32 screenWidth = Environment->getVideoDriver()->getScreenSize().Width, screenHeight = Environment->getVideoDriver()->getScreenSize().Height;
-    
+
+    if (event.EventType == irr::EET_KEY_INPUT_EVENT) {
+        if (event.KeyInput.Key == KEY_MENU || event.KeyInput.Key == KEY_LMENU || event.KeyInput.Key == KEY_RMENU) {
+            altPressed = event.KeyInput.PressedDown;
+        }
+    }
+
     if (event.EventType == irr::EET_KEY_INPUT_EVENT && isOpen) {
         if (event.KeyInput.Key == KEY_ESCAPE && event.KeyInput.PressedDown) {
             close();
             return true;
         }
-        
-        if (event.KeyInput.Key == KEY_KEY_E && event.KeyInput.PressedDown && 
-            (event.KeyInput.Shift || GetAsyncKeyState(VK_MENU) || GetAsyncKeyState(VK_LMENU) || GetAsyncKeyState(VK_RMENU))) {
+
+        if (event.KeyInput.Key == KEY_KEY_E && event.KeyInput.PressedDown &&
+            (event.KeyInput.Shift || altPressed)) {
             editMode = !editMode;
             return true;
         }
@@ -273,14 +279,14 @@ bool Menu::OnEvent(const irr::SEvent& event)
                         return true;
                     }
                     break;
-                    
+
                 case irr::EMIE_LMOUSE_LEFT_UP:
                     coords_sprite.isDragging = false;
                     fov_sprite.isDragging = false;
                     chat.isDragging = false;
                     keystr.isDragging = false;
                     break;
-                    
+
                 case irr::EMIE_MOUSE_MOVED:
                     if (coords_sprite.isDragging) {
                         coords_sprite.x = event.MouseInput.X - offset.X;
@@ -306,14 +312,14 @@ bool Menu::OnEvent(const irr::SEvent& event)
                         keystr.save(screenWidth, screenHeight, "keys_x", "keys_y");
                     }
                     break;
-                    
+
                 default:
                     break;
             }
         }
         return Parent ? Parent->OnEvent(event) : false;
     }
-    
+
     if (isOpen && !editMode) {
         for (size_t i = 0; i < buttons.size(); i++) {
             buttons[i].isPressed(event);
@@ -331,14 +337,14 @@ void Menu::draw()
 {
     updateScrollBarPosition(scrollbar, screenW, screenH);
     updateFpsScrollBarPosition(fps_scrollbar, screenW, screenH);
-    
+
     if (editMode && isOpen) {
         driver->draw2DRectangleOutline(core::rect<s32>(coords_sprite.get_rect()), video::SColor(255, 255, 0, 255));
         driver->draw2DRectangleOutline(core::rect<s32>(fov_sprite.get_rect()), video::SColor(255, 255, 0, 255));
         driver->draw2DRectangleOutline(core::rect<s32>(chat.get_rect()), video::SColor(255, 255, 0, 255));
         driver->draw2DRectangleOutline(core::rect<s32>(keystr.get_rect()), video::SColor(255, 255, 0, 255));
     }
-    
+
     if (isOpen && !editMode) {
         drawBackground(driver, screenW, screenH);
 
@@ -358,11 +364,11 @@ void Menu::draw()
 
         if (current_category == SettingCategory::RENDER) {
             std::wstring wfov = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes("FOV: " + std::to_string(int(g_settings->getFloat("fov_custom.data"))));
-            
+
             int offsetX = 190;
             font->draw(wfov.c_str(), core::rect<s32>(((screenW - 300) / 2 + (-45)) * 1.72 - offsetX, scrollbarTop,
             (screenW + 300) / 2 + (-45) - offsetX, scrollbarTop + 20), video::SColor(255, 255, 255, 255));
-            
+
             std::wstring wfps = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes("FPS: " + std::to_string(int(fps_scrollbar->getPos())));
             font->draw(wfps.c_str(), core::rect<s32>(((screenW - 300) / 2 + (-45)) * 1.72 - offsetX, fpsScrollbarTop,
             (screenW + 300) / 2 + (-45) - offsetX, fpsScrollbarTop + 20), video::SColor(255, 255, 255, 255));

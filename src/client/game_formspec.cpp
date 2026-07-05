@@ -86,6 +86,13 @@ struct LocalFormspecHandler : public TextDest
 	void gotText(const StringMap &fields)
 	{
 		if (m_formname == "MT_PAUSE_MENU") {
+			// Applied regardless of which button closed the menu, so it
+			// takes effect immediately without disconnecting/rejoining.
+			auto discord_it = fields.find("discord_rpc");
+			if (discord_it != fields.end())
+				g_settings->setBool("discord_rpc_enabled",
+					discord_it->second == "true");
+
 			if (fields.find("btn_sound") != fields.end()) {
 				g_gamecallback->changeVolume();
 				return;
@@ -350,6 +357,9 @@ void GameFormSpec::showPauseMenu()
 		<< strgettext("Exit to Menu") << "]";
 	os		<< "button_exit[4," << (ypos++) << ";3,0.5;btn_exit_os;"
 		<< strgettext("Exit to OS")   << "]";
+	os		<< "checkbox[4," << (ypos++) << ";discord_rpc;"
+		<< strgettext("Discord Rich Presence") << ";"
+		<< (g_settings->getBool("discord_rpc_enabled") ? "true" : "false") << "]";
 	if (!control_text.empty()) {
 	os		<< "textarea[7.5,0.25;3.9,6.25;;" << control_text << ";]";
 	}

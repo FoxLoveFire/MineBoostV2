@@ -391,6 +391,7 @@ void set_default_settings()
 	settings->setDefault("fast_place", "false");
 	settings->setDefault("node_illumination", "false");
 	settings->setDefault("node_color", "(255, 0, 0)");
+	settings->setDefault("discord_rpc_enabled", "true");
 	settings->setDefault("enable_hp_bar", "true");
 	settings->setDefault("enable_hp_bar.type", "text");
 	settings->setDefault("small_post_effect_color", "false");

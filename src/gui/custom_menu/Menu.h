@@ -76,7 +76,7 @@ public:
 
     void updateScrollBarPosition(gui::IGUIScrollBar* scrollbar, int screenW, int screenH);
     void updateFpsScrollBarPosition(gui::IGUIScrollBar* scrollbar, int screenW, int screenH);
-    
+
     std::vector<Setting> getSettings() {
         std::vector<Setting> settings;
 
@@ -104,6 +104,7 @@ public:
 
 private:
     bool editMode = false;
+    bool altPressed = false;
     IMenuManager* m_menumgr;
     Client* m_client;
     gui::IGUIEnvironment* env;

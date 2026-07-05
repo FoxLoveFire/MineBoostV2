@@ -67,6 +67,18 @@ core.register_chatcommand("clear_chat_queue", {
 	end,
 })
 
+-- Manage your friend list, used by the client-side friend ESP/highlight.
+-- The actual add/del/list logic is handled natively by the client before
+-- the chat message ever reaches this callback; this entry exists purely
+-- so ".friend" shows up correctly in the ".help" command list/GUI.
+core.register_chatcommand("friend", {
+	params = core.gettext("add | del | list <Nickname>"),
+	description = core.gettext("Manage your friend list (used by friend ESP)"),
+	func = function(param)
+		return true, core.gettext("Use \".friend add|del|list <Nickname>\" in chat.")
+	end,
+})
+
 function core.run_server_chatcommand(cmd, param)
 	core.send_chat_message("/" .. cmd .. " " .. param)
 end

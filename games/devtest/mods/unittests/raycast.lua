@@ -63,9 +63,9 @@ local function test_raycast_noskip(_, pos)
 		local ray_start
 		repeat
 			ray_start = vector.random_in_area(cuboid_minmax(r))
-		until not ray_start:in_area(cuboid_minmax(1.501))
+		until not ray_start:in_area(cuboid_minmax(1.51))
 		-- Pick a random position inside the dirt
-		local ray_end = vector.random_in_area(cuboid_minmax(1.499))
+		local ray_end = vector.random_in_area(cuboid_minmax(1.49))
 		-- The first pointed thing should have only air "in front" of it,
 		-- or a dirt node got falsely skipped.
 		local pt = core.raycast(ray_start, ray_end, false, false):next()

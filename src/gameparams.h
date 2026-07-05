@@ -34,6 +34,10 @@ struct GameStartData : GameParams
 	std::string name;
 	std::string password;
 	std::string address;
+	// Friendly display name of the server (from the favorites/connect
+	// menu), used e.g. for Discord Rich Presence. May be empty if the
+	// player just typed a raw address/IP without a saved name.
+	std::string server_name;
 	bool local_server;
 
 	ELoginRegister allow_login_or_register = ELoginRegister::Any;
